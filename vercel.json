@@ -1,0 +1,16 @@
+{
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/.next",
+  "framework": "nextjs",
+  "installCommand": "cd frontend && npm install",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://gotot-api.onrender.com/:path*"
+    },
+    {
+      "source": "/ws/:path*",
+      "destination": "https://gotot-api.onrender.com/ws/:path*"
+    }
+  ]
+}
