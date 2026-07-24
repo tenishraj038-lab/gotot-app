@@ -56,7 +56,7 @@ const allPlatforms = [
 ];
 
 export default function DownloadForm() {
-  const { url, setUrl, isLoading, setIsLoading, setVideoInfo, setError, addRecentUrl, detectedPlatform, setDetectedPlatform, setPlaylistEntries, termsAccepted, setTermsModalOpen, setFfmpegAvailable } = useStore();
+  const { url, setUrl, isLoading, setIsLoading, setVideoInfo, setError, addRecentUrl, detectedPlatform, setDetectedPlatform, setPlaylistEntries, termsAccepted, setTermsModalOpen, setFfmpegAvailable, bumpSearchNonce, searchNonce } = useStore();
   const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {

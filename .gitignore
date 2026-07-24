@@ -20,3 +20,4 @@ nginx/ssl/
 *.backup
 *.dump
 backups/
+.vercel
