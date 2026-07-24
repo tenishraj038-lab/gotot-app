@@ -21,3 +21,8 @@ nginx/ssl/
 *.dump
 backups/
 .vercel
+
+frontend/.env.local
+backend/gotot_local.db
+backend/venv/
+**/.vercel
