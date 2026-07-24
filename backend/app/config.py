@@ -12,7 +12,7 @@ def _fix_database_url(url: str) -> str:
         return f"postgresql+asyncpg://{rest}"
     if lower_scheme == "postgresql":
         return f"postgresql+asyncpg://{rest}"
-    if "+" not in lower_scheme and lower_scheme.startswith("postgres"):
+    if "asyncpg" in lower_scheme:
         return f"postgresql+asyncpg://{rest}"
     return url
 

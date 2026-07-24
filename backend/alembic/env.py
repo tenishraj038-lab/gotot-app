@@ -25,6 +25,8 @@ if sep:
         db_url = f"postgresql+asyncpg://{rest}"
     elif lower_scheme == "postgresql":
         db_url = f"postgresql+asyncpg://{rest}"
+    elif "asyncpg" in lower_scheme:
+        db_url = f"postgresql+asyncpg://{rest}"
     else:
         db_url = raw_db_url
 else:
