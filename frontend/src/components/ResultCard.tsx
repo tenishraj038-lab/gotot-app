@@ -109,6 +109,7 @@ export default function ResultCard() {
   const handleDownload = async (format: FormatInfo, asMp3 = false) => {
     if (!videoInfo) return;
     const capturedUrl = url;
+    const searchVer = useStore.getState().searchVersion;
     setDownloadingFormat(format.format_id);
     setError(null);
     setRetryCount(0);
@@ -117,7 +118,8 @@ export default function ResultCard() {
       try {
         const result = await api.startDownload(capturedUrl, format.format_id, asMp3, mp3Bitrate);
 
-        if (useStore.getState().url !== capturedUrl) return;
+        const state = useStore.getState();
+        if (state.url !== capturedUrl || state.searchVersion !== searchVer) return;
 
         if (result.require_ad) {
           setPendingDownload({ url, formatId: format.format_id, asMp3 });

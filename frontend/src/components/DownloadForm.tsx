@@ -80,7 +80,8 @@ export default function DownloadForm() {
       return;
     }
 
-    useStore.setState({ isLoading: true, videoInfo: null, downloadResult: null, error: null, playlistEntries: [] });
+    const searchVer = useStore.getState().searchVersion + 1;
+    useStore.setState({ isLoading: true, videoInfo: null, downloadResult: null, error: null, playlistEntries: [], searchVersion: searchVer });
     try {
       const info = await api.getVideoInfo(url.trim());
       useStore.setState({ videoInfo: info, isLoading: false, error: null });

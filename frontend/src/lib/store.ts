@@ -56,6 +56,8 @@ interface DownloadState {
   setDownloadHistory: (history: Array<{ id: string; url: string; title?: string; platform: string; format: string; status: string; file_size: number | null; created_at: string | null }>) => void;
   ffmpegAvailable: boolean | null;
   setFfmpegAvailable: (available: boolean | null) => void;
+  searchVersion: number;
+  bumpSearch: () => void;
 }
 
 export const useStore = create<DownloadState>((set, get) => ({
@@ -126,4 +128,6 @@ export const useStore = create<DownloadState>((set, get) => ({
   setDownloadHistory: (history) => set({ downloadHistory: history }),
   ffmpegAvailable: null,
   setFfmpegAvailable: (available) => set({ ffmpegAvailable: available }),
+  searchVersion: 0,
+  bumpSearch: () => set((s) => ({ searchVersion: s.searchVersion + 1 })),
 }));
