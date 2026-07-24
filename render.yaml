@@ -39,9 +39,9 @@ services:
       - key: SMTP_PORT
         value: "587"
       - key: DATABASE_URL
-        sync: false
+        value: "postgresql+asyncpg://postgres:Blackraise%40123@db.uqbuizupqdtjzdhpixcz.supabase.co:6543/postgres"
       - key: REDIS_URL
-        sync: false
+        value: "rediss://default:Blackraise%40123@electric-opossum-178093.upstash.io:6379"
       - key: RAZORPAY_KEY_ID
         sync: false
       - key: RAZORPAY_KEY_SECRET
