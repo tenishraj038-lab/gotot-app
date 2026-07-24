@@ -1,10 +1,34 @@
 from pydantic_settings import BaseSettings
+from pydantic import field_validator
 from functools import lru_cache
+
+
+def _fix_database_url(url: str) -> str:
+    if url.startswith("postgres://"):
+        url = url.replace("postgres://", "postgresql+asyncpg://", 1)
+    elif url.startswith("postgresql://") and "+" not in url.split("://")[0]:
+        url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+    return url
+
+def _fix_redis_url(url: str) -> str:
+    if url.startswith("rediss://"):
+        url = url.replace("rediss://", "redis://", 1)
+    return url
 
 
 class Settings(BaseSettings):
     secret_key: str
     database_url: str = "postgresql+asyncpg://gotot:gotot_pass@localhost:5432/gotot"
+
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def transform_database_url(cls, v: str) -> str:
+        return _fix_database_url(v)
+
+    @field_validator("redis_url", "celery_broker_url", "celery_result_backend", mode="before")
+    @classmethod
+    def transform_redis_url(cls, v: str) -> str:
+        return _fix_redis_url(v)
     redis_url: str = "redis://localhost:6379/0"
     environment: str = "development"
     log_level: str = "info"
