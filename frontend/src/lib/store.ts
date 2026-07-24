@@ -68,7 +68,7 @@ export const useStore = create<DownloadState>((set, get) => ({
   downloadResult: null,
   setDownloadResult: (result) => set({ downloadResult: result }),
   error: null,
-  setError: (error) => set({ error, isLoading: false, videoInfo: null }),
+  setError: (error) => set({ error, isLoading: false, videoInfo: null, downloadResult: null }),
   isDarkMode: false,
   toggleDarkMode: () =>
     set((state) => {

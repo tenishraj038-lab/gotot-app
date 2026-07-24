@@ -108,13 +108,16 @@ export default function ResultCard() {
 
   const handleDownload = async (format: FormatInfo, asMp3 = false) => {
     if (!videoInfo) return;
+    const capturedUrl = url;
     setDownloadingFormat(format.format_id);
     setError(null);
     setRetryCount(0);
 
     const doDownload = async () => {
       try {
-        const result = await api.startDownload(url, format.format_id, asMp3, mp3Bitrate);
+        const result = await api.startDownload(capturedUrl, format.format_id, asMp3, mp3Bitrate);
+
+        if (useStore.getState().url !== capturedUrl) return;
 
         if (result.require_ad) {
           setPendingDownload({ url, formatId: format.format_id, asMp3 });
