@@ -4,10 +4,16 @@ from functools import lru_cache
 
 
 def _fix_database_url(url: str) -> str:
-    if url.startswith("postgres://"):
-        url = url.replace("postgres://", "postgresql+asyncpg://", 1)
-    elif url.startswith("postgresql://") and "+" not in url.split("://")[0]:
-        url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+    scheme, sep, rest = url.partition("://")
+    if not sep:
+        return url
+    lower_scheme = scheme.lower()
+    if lower_scheme == "postgres":
+        return f"postgresql+asyncpg://{rest}"
+    if lower_scheme == "postgresql":
+        return f"postgresql+asyncpg://{rest}"
+    if "+" not in lower_scheme and lower_scheme.startswith("postgres"):
+        return f"postgresql+asyncpg://{rest}"
     return url
 
 def _fix_redis_url(url: str) -> str:
