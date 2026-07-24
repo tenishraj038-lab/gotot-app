@@ -1,10 +1,56 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
   <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#3b82f6"/>
-      <stop offset="100%" stop-color="#c026d3"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="50%" stop-color="#16213e"/>
+      <stop offset="100%" stop-color="#0f3460"/>
     </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffd700"/>
+      <stop offset="30%" stop-color="#ffb700"/>
+      <stop offset="60%" stop-color="#ffd700"/>
+      <stop offset="100%" stop-color="#c9a800"/>
+    </linearGradient>
+    <linearGradient id="gold2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffd700"/>
+      <stop offset="50%" stop-color="#c9a800"/>
+      <stop offset="100%" stop-color="#8b7500"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
   </defs>
-  <rect width="512" height="512" rx="102" fill="url(#g)"/>
-  <text x="256" y="320" text-anchor="middle" fill="white" font-size="256" font-weight="bold" font-family="sans-serif">G</text>
+  
+  <circle cx="256" cy="256" r="240" fill="url(#bg)" stroke="url(#gold)" stroke-width="8"/>
+  
+  <!-- Diamond emblem -->
+  <g transform="translate(256,180)" filter="url(#shadow)">
+    <path d="M0,-100 L65,-20 L0,60 L-65,-20 Z" fill="url(#gold2)" stroke="#8b7500" stroke-width="2" opacity="0.95"/>
+    <path d="M0,-80 L50,-16 L0,46 L-50,-16 Z" fill="#1a1a2e" opacity="0.8"/>
+  </g>
+  
+  <!-- G letterform -->
+  <text x="256" y="310" text-anchor="middle" font-family="Georgia,serif" font-size="120" font-weight="bold" fill="url(#gold)" filter="url(#glow)" letter-spacing="-4">G</text>
+  
+  <!-- Crown -->
+  <g transform="translate(256,54)" filter="url(#shadow)">
+    <path d="M-44,20 L-36,-20 L-12,-4 L0,-28 L12,-4 L36,-20 L44,20 Z" fill="url(#gold)" stroke="#8b7500" stroke-width="1.5"/>
+    <circle cx="0" cy="-28" r="4" fill="#ffd700"/>
+    <circle cx="-36" cy="-20" r="3" fill="#ffd700"/>
+    <circle cx="36" cy="-20" r="3" fill="#ffd700"/>
+  </g>
+  
+  <!-- Download arrow -->
+  <g transform="translate(256,370)" filter="url(#shadow)">
+    <rect x="-20" y="-8" width="40" height="8" rx="4" fill="url(#gold)"/>
+    <path d="M-12,0 L0,24 L12,0" fill="url(#gold)" stroke="#8b7500" stroke-width="1"/>
+  </g>
+  
+  <!-- Wings -->
+  <path d="M96,220 Q80,180 56,140 Q64,170 80,190 Q76,165 68,140 Q82,175 96,220" fill="url(#gold)" opacity="0.4"/>
+  <path d="M416,220 Q432,180 456,140 Q448,170 432,190 Q436,165 444,140 Q430,175 416,220" fill="url(#gold)" opacity="0.4"/>
 </svg>

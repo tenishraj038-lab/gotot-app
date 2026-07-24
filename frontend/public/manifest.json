@@ -4,8 +4,8 @@
   "description": "Download videos from TikTok, Instagram, Twitter, Facebook, Reddit, and 10+ more platforms. Free, fast, and secure.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#3b82f6",
+  "background_color": "#1a1a2e",
+  "theme_color": "#c9a800",
   "orientation": "portrait",
   "icons": [
     { "src": "/icons/icon-72x72.svg", "sizes": "72x72", "type": "image/svg+xml" },
