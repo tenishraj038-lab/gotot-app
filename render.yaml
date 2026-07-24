@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: gotot-api
+    name: gotot-app
     env: python
     region: oregon
     plan: free
@@ -17,9 +17,9 @@ services:
       - key: LOG_LEVEL
         value: info
       - key: ALLOWED_ORIGINS
-        value: "https://gotot.pages.dev,https://gotot-api.onrender.com"
+        value: "https://gotot.vercel.app,https://gotot-app.onrender.com"
       - key: FRONTEND_URL
-        value: "https://gotot.pages.dev"
+        value: "https://gotot.vercel.app"
       - key: RATE_LIMIT_PER_MINUTE
         value: "60"
       - key: DOWNLOAD_TIMEOUT
