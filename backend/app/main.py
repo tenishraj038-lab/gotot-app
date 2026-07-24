@@ -134,6 +134,7 @@ app.include_router(feedback.router)
 @app.get("/health")
 async def health():
     from app.services.downloader import get_ffmpeg_status
+    from app.models.database import engine as db_engine
     db_status = "disconnected"
     db_latency_ms = 0
     try:
@@ -152,6 +153,8 @@ async def health():
         "status": "ok" if db_status == "connected" else "degraded",
         "version": "3.2.0",
         "environment": settings.environment,
+        "db_url_prefix": settings.database_url.split("://")[0] if "://" in settings.database_url else "unknown",
+        "redis_url_prefix": settings.redis_url.split("://")[0] if "://" in settings.redis_url else "unknown",
         "database": db_status,
         "database_latency_ms": db_latency_ms,
         "ffmpeg": ffmpeg,
