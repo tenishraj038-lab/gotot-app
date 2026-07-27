@@ -1,0 +1,9 @@
+name: Keep Render Alive
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -sf https://gotot-app.onrender.com/health || echo "Backend not ready yet"
