@@ -50,32 +50,26 @@ export default function Header() {
       api.getSubscriptionStatus().then(setSubscription).catch(() => {});
     }
     const handleScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && mobileMenuOpen) setMobileMenuOpen(false);
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [mobileMenuOpen]);
 
   const handleLogout = () => {
     clearTokens();
     setUser(null);
     setSubscription(null);
-    toast.success("Signed out");
+    toast.success("Logged out");
     router.push("/");
   };
 
-  const isAuthenticated = !!getAuthToken();
+  const isLoggedIn = user || getAuthToken();
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled ? "glass border-b border-gray-200/50 dark:border-gray-800/50" : "bg-transparent"
-    }`}>
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? "bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50" : "bg-transparent"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-3">
@@ -88,37 +82,25 @@ export default function Header() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">
-            <Link href="/" className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-              {t.nav.home}
-            </Link>
-            <Link href="/pricing" className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-              {t.nav.pricing}
-            </Link>
-            <Link href="/docs" className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-              API
-            </Link>
+            <Link href="/" className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Home</Link>
+            <Link href="/pricing" className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Pricing</Link>
+            <Link href="/docs" className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">API</Link>
             <div className="relative group">
               <button className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center gap-1">
-                {t.nav.features}
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                Features
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/></svg>
               </button>
               <div className="absolute top-full left-0 mt-2 w-48 py-2 rounded-xl bg-white dark:bg-gray-900 border border-gray-200/50 dark:border-gray-800/50 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                {[
-                  { name: "TikTok", href: "/download/tiktok" },
-                  { name: "Instagram", href: "/download/instagram" },
-                  { name: "Twitter/X", href: "/download/twitter" },
-                  { name: "Facebook", href: "/download/facebook" },
-                  { name: "Reddit", href: "/download/reddit" },
-                  { name: "Vimeo", href: "/download/vimeo" },
-                  { name: "Twitch", href: "/download/twitch" },
-                  { name: "Dailymotion", href: "/download/dailymotion" },
-                  { name: "LinkedIn", href: "/download/linkedin" },
-                  { name: "Pinterest", href: "/download/pinterest" },
-                ].map((p) => (
-                  <Link key={p.name} href={p.href} className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white">
-                    {p.name}
-                  </Link>
-                ))}
+                <Link href="/download/tiktok" className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white">TikTok</Link>
+                <Link href="/download/instagram" className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white">Instagram</Link>
+                <Link href="/download/twitter" className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white">Twitter/X</Link>
+                <Link href="/download/facebook" className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white">Facebook</Link>
+                <Link href="/download/reddit" className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white">Reddit</Link>
+                <Link href="/download/vimeo" className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white">Vimeo</Link>
+                <Link href="/download/twitch" className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white">Twitch</Link>
+                <Link href="/download/dailymotion" className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white">Dailymotion</Link>
+                <Link href="/download/linkedin" className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white">LinkedIn</Link>
+                <Link href="/download/pinterest" className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white">Pinterest</Link>
               </div>
             </div>
           </nav>
@@ -130,63 +112,40 @@ export default function Header() {
               className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200"
               aria-label="Toggle dark mode"
             >
-              {isDarkMode ? (
-                <Sun className="w-4 h-4 text-yellow-500" />
-              ) : (
-                <Moon className="w-4 h-4 text-gray-600" />
-              )}
+              {isDarkMode ? <Sun className="w-4 h-4 text-gray-600" /> : <Moon className="w-4 h-4 text-gray-600" />}
             </button>
 
-            {isAuthenticated ? (
-              <div className="hidden md:flex items-center gap-2">
+            {isLoggedIn ? (
+              <>
                 <NotificationBell />
                 <Link
                   href="/dashboard"
-                  className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200"
-                  title="Dashboard"
+                  className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-primary-500/25"
                 >
-                  <LayoutDashboard className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                </Link>
-                <Link
-                  href="/settings"
-                  className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200"
-                  title="Settings"
-                >
-                  <svg className="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
+                  <LayoutDashboard className="w-4 h-4" />
+                  Dashboard
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200"
-                  title="Sign out"
+                  className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 hidden md:block"
+                  title="Sign Out"
                 >
                   <LogOut className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                 </button>
-              </div>
+              </>
             ) : (
-              <button
-                onClick={() => setAuthModalOpen(true)}
+              <Link
+                href="/login"
                 className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-primary-500/25"
               >
                 <User className="w-4 h-4" />
-                {t.nav.signIn}
-              </button>
+                Sign In
+              </Link>
             )}
 
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:flex p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200"
-            >
-              <Github className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-            </a>
-
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
@@ -194,29 +153,22 @@ export default function Header() {
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200/50 dark:border-gray-800/50 space-y-1">
-            <Link href="/" className="block px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>{t.nav.home}</Link>
-            <Link href="/pricing" className="block px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>{t.nav.pricing}</Link>
-            <Link href="/download/tiktok" className="block px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>TikTok</Link>
-            <Link href="/download/instagram" className="block px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>Instagram</Link>
-            <Link href="/download/twitter" className="block px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>Twitter/X</Link>
-            <Link href="/download/facebook" className="block px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>Facebook</Link>
-            <Link href="/download/reddit" className="block px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>Reddit</Link>
-            <Link href="/download/vimeo" className="block px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>Vimeo</Link>
-            <Link href="/download/twitch" className="block px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>Twitch</Link>
-            <Link href="/download/dailymotion" className="block px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>Dailymotion</Link>
-            <Link href="/download/linkedin" className="block px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>LinkedIn</Link>
-            <Link href="/download/pinterest" className="block px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>Pinterest</Link>
-            {isAuthenticated ? (
-              <>
-                <Link href="/dashboard" className="block px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>{t.nav.dashboard}</Link>
-                <Link href="/referrals" className="block px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>Referrals</Link>
-                <Link href="/settings" className="block px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>Settings</Link>
-                <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800">{t.nav.signOut}</button>
-              </>
-            ) : (
-              <button onClick={() => { setAuthModalOpen(true); setMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-xl text-sm hover:bg-gray-100 dark:hover:bg-gray-800">{t.nav.signIn}</button>
-            )}
+          <div className="md:hidden py-4 border-t border-gray-200/50 dark:border-gray-800/50">
+            <nav className="flex flex-col gap-2">
+              <Link href="/" className="px-3 py-2 text-sm font-medium rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>Home</Link>
+              <Link href="/pricing" className="px-3 py-2 text-sm font-medium rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>Pricing</Link>
+              <Link href="/download/instagram" className="px-3 py-2 text-sm font-medium rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>Instagram</Link>
+              <Link href="/download/tiktok" className="px-3 py-2 text-sm font-medium rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>TikTok</Link>
+              <Link href="/docs" className="px-3 py-2 text-sm font-medium rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => setMobileMenuOpen(false)}>API Docs</Link>
+              {isLoggedIn ? (
+                <>
+                  <Link href="/dashboard" className="px-3 py-2 text-sm font-medium rounded-xl bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300" onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
+                  <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="px-3 py-2 text-sm font-medium rounded-xl text-red-600 text-left">Sign Out</button>
+                </>
+              ) : (
+                <Link href="/login" className="px-3 py-2 text-sm font-medium rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 text-white text-center" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
+              )}
+            </nav>
           </div>
         )}
       </div>

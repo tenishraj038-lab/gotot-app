@@ -58,6 +58,11 @@ interface DownloadState {
   setFfmpegAvailable: (available: boolean | null) => void;
   searchVersion: number;
   bumpSearch: () => void;
+
+  supabaseUser: User | null;
+  setSupabaseUser: (user: User | null) => void;
+  supabaseSession: Session | null;
+  setSupabaseSession: (session: Session | null) => void;
 }
 
 export const useStore = create<DownloadState>((set, get) => ({

@@ -8,26 +8,26 @@ logger = logging.getLogger("gotot.db")
 
 _is_sqlite = settings.database_url.startswith("sqlite")
 
-_engine = None
+engine = None
 async_session = None
 
 def _try_create_engine():
-    global _engine, async_session
+    global engine, async_session
     try:
         if _is_sqlite:
-            _engine = create_async_engine(
+            engine = create_async_engine(
                 settings.database_url,
                 echo=settings.environment == "development",
             )
         else:
-            _engine = create_async_engine(
+            engine = create_async_engine(
                 settings.database_url,
                 pool_size=20,
                 max_overflow=10,
                 pool_pre_ping=True,
                 echo=settings.environment == "development",
             )
-        async_session = async_sessionmaker(_engine, class_=AsyncSession, expire_on_commit=False)
+        async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
         return True
     except Exception as e:
         logger.warning(f"Database engine creation failed (non-fatal): {e}")
@@ -49,11 +49,11 @@ async def get_db():
             await session.close()
 
 async def init_db():
-    if _engine is None:
+    if engine is None:
         logger.warning("No database engine, skipping init")
         return
     try:
-        async with _engine.begin() as conn:
+        async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
     except Exception as e:
         logger.warning(f"Database init failed (will retry on demand): {e}")

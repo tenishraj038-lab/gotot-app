@@ -65,7 +65,7 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: "/favicon.svg",
-    apple: "/icons/icon-192x192.svg",
+    apple: "/favicon.svg",
   },
   other: {
     "mobile-web-app-capable": "yes",

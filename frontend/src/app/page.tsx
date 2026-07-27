@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import Hero from "@/components/Hero";
 import DownloadForm from "@/components/DownloadForm";
@@ -35,30 +34,13 @@ export default function Home() {
       <AffiliateSection />
       <section className="py-16 bg-gray-50/50 dark:bg-gray-900/50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.h2
-            className="text-3xl font-bold mb-4"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
+          <h2 className="text-3xl font-bold mb-4">
             Ready to Start Downloading?
-          </motion.h2>
-          <motion.p
-            className="text-lg text-gray-600 dark:text-gray-400 mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-          >
+          </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
             Paste any video URL above and download in seconds. No sign-up needed.
-          </motion.p>
-          <motion.div
-            className="flex flex-wrap items-center justify-center gap-3"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
             {platforms.map((p) => (
               <a
                 key={p.name}
@@ -69,7 +51,7 @@ export default function Home() {
                 <ExternalLink className="w-3 h-3" />
               </a>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
     </>
