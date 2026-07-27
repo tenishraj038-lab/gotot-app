@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, ArrowRight, Loader2, AlertCircle, Lock, Eye, EyeOff } from "lucide-react";
 import { api, setTokens } from "@/lib/api";
 import { useStore } from "@/lib/store";
 import toast from "react-hot-toast";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/dashboard";
@@ -231,5 +231,13 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-pulse text-gray-400">Loading...</div></div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

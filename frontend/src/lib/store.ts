@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { User, Session } from "@supabase/supabase-js";
 import { VideoInfo, DownloadResult, UserInfo, SubscriptionStatus } from "./api";
 
 interface PlaylistEntry {
@@ -135,4 +136,9 @@ export const useStore = create<DownloadState>((set, get) => ({
   setFfmpegAvailable: (available) => set({ ffmpegAvailable: available }),
   searchVersion: 0,
   bumpSearch: () => set((s) => ({ searchVersion: s.searchVersion + 1 })),
+
+  supabaseUser: null,
+  setSupabaseUser: (user) => set({ supabaseUser: user }),
+  supabaseSession: null,
+  setSupabaseSession: (session) => set({ supabaseSession: session }),
 }));
