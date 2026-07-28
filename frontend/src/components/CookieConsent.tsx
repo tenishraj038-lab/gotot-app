@@ -61,9 +61,9 @@ export default function CookieConsent() {
                   Cookie Consent
                 </h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                  We use essential cookies to provide our service and optional analytics cookies to
-                  improve your experience. By accepting, you consent to our use of analytics cookies.
-                  See our{" "}
+                  We use essential cookies to provide our service, optional analytics cookies to
+                  improve your experience, and advertising cookies to show relevant ads. By accepting,
+                  you consent to our use of analytics and advertising cookies. See our{" "}
                   <a href="/privacy" className="text-primary-600 hover:text-primary-500 underline">
                     Privacy Policy
                   </a>{" "}

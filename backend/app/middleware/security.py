@@ -55,12 +55,12 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         if settings.environment == "production":
             csp_parts = [
                 "default-src 'self'",
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://www.googletagmanager.com",
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://www.googletagmanager.com https://pagead2.googlesyndication.com https://ads.google.com https://doubleclick.net https://ad.doubleclick.net https://tpc.googlesyndication.com https://googleads.g.doubleclick.net https://www.gstatic.com",
                 "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
                 "img-src 'self' data: https: blob:",
                 "font-src 'self' https://fonts.gstatic.com",
                 "connect-src 'self' https://api.razorpay.com https://sentry.io",
-                "frame-src 'self' https://checkout.razorpay.com",
+                "frame-src 'self' https://checkout.razorpay.com https://ads.google.com https://doubleclick.net https://ad.doubleclick.net https://tpc.googlesyndication.com https://googleads.g.doubleclick.net",
                 "media-src 'self'",
                 "object-src 'none'",
             ]

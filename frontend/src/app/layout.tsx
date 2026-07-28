@@ -166,6 +166,13 @@ export default function RootLayout({
             />
           </>
         )}
+        {process.env.NEXT_PUBLIC_ADSENSE_ID && (
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
+            crossOrigin="anonymous"
+          />
+        )}
       </head>
       <body className="min-h-screen flex flex-col bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 antialiased">
         <a
