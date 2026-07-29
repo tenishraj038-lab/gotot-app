@@ -25,6 +25,8 @@ CSRF_EXEMPT_PATHS = {
     "/auth/google/login",
     "/api-keys/create",
     "/payment/webhook",
+    "/download/start",
+    "/download/file",
 }
 
 
@@ -47,7 +49,7 @@ class CSRFMiddleware(BaseHTTPMiddleware):
                 )
             return response
 
-        if request.url.path in CSRF_EXEMPT_PATHS:
+        if request.url.path in CSRF_EXEMPT_PATHS or request.url.path.startswith("/download/file/"):
             response = await call_next(request)
             return response
 
