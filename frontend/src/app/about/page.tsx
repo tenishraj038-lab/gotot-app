@@ -2,10 +2,10 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About GoTot - Universal Video Downloader",
-  description: "Learn about GoTot — the free, fast, and secure video downloader supporting 15+ platforms. No registration required.",
+  description: "Learn about GoTot — the free, fast, and secure video downloader supporting 10+ platforms. No registration required.",
   openGraph: {
     title: "About GoTot - Universal Video Downloader",
-    description: "Learn about GoTot — the free, fast, and secure video downloader supporting 15+ platforms.",
+    description: "Learn about GoTot — the free, fast, and secure video downloader supporting 10+ platforms.",
     type: "website",
     url: "https://gotot.app/about",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "GoTot - Universal Video Downloader" }],
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "About GoTot - Universal Video Downloader",
-    description: "Learn about GoTot — the free, fast, and secure video downloader supporting 15+ platforms.",
+    description: "Learn about GoTot — the free, fast, and secure video downloader supporting 10+ platforms.",
     images: ["/og-image.png"],
   },
   alternates: {
