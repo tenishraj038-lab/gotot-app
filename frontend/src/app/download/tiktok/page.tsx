@@ -30,7 +30,12 @@ export default function TiktokDownloaderPage() {
         heading: "TikTok Video Downloader",
         subheading: "Save TikTok videos without watermark. Free and no sign-up required.",
         sections: [
-          { title: "How to download TikTok videos", steps: ["Open TikTok and copy the video link", "Paste the URL above", "Choose video or audio only", "Download and enjoy offline"] },
+          { title: "How to download TikTok videos", steps: [
+            { text: "Open TikTok and copy the video link", image: "/og-image.png" },
+            { text: "Paste the URL above", image: "/og-image.png" },
+            { text: "Choose video or audio only", image: "/og-image.png" },
+            { text: "Download and enjoy offline", image: "/og-image.png" },
+          ]},
           { title: "Features", items: ["No watermark download", "Save TikTok slideshows", "MP4 and MP3 formats", "High quality preservation"] },
         ],
         faq: [

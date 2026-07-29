@@ -13,7 +13,7 @@ interface SeoContent {
   subheading: string;
   sections: Array<{
     title: string;
-    steps?: string[];
+    steps?: Array<{ text: string; image?: string }>;
     items?: string[];
   }>;
   faq: Array<{ q: string; a: string }>;
@@ -54,7 +54,8 @@ export default function DownloadClient({ platform, defaultUrl, seoContent }: Pro
     step: seoContent.sections[0]?.steps?.map((step, i) => ({
       "@type": "HowToStep",
       position: i + 1,
-      text: step,
+      text: step.text,
+      image: step.image || undefined,
     })) || [],
   };
 
@@ -136,7 +137,15 @@ export default function DownloadClient({ platform, defaultUrl, seoContent }: Pro
                         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-accent-600 flex items-center justify-center mb-2">
                           <span className="text-white font-bold text-sm">{j + 1}</span>
                         </div>
-                        <p className="text-sm">{step}</p>
+                        {step.image && (
+                          <img
+                            src={step.image}
+                            alt={`Step ${j + 1}`}
+                            className="w-full h-32 object-cover rounded-lg mb-2"
+                            loading="lazy"
+                          />
+                        )}
+                        <p className="text-sm">{step.text}</p>
                       </div>
                     ))}
                   </div>

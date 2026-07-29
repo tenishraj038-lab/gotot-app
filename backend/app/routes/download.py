@@ -638,6 +638,7 @@ async def serve_file(
     filename: str,
     request: Request,
     db: AsyncSession = Depends(get_db),
+    id: str | None = Query(None, alias="id"),
 ):
     """Serve a downloaded file with proper MIME types and security checks."""
     user = await get_user_from_request(request, db)
@@ -654,13 +655,21 @@ async def serve_file(
 
     # Check anonymous access
     if not user:
-        download_key = f"{ip_address}:{safe_name}"
-        if download_key not in RECENT_DOWNLOADS:
-            raise HTTPException(status_code=401, detail="Authentication required to download this file")
-        stored = RECENT_DOWNLOADS.get(download_key, {})
-        if time.time() - stored.get("time", 0) > 3600:
-            del RECENT_DOWNLOADS[download_key]
-            raise HTTPException(status_code=401, detail="Download link expired")
+        # Allow download if download_id matches a recent entry (works across IP changes)
+        if id:
+            for key, val in RECENT_DOWNLOADS.items():
+                if val.get("download_id") == id and time.time() - val.get("time", 0) <= 3600:
+                    break
+            else:
+                raise HTTPException(status_code=401, detail="Invalid or expired download link")
+        else:
+            download_key = f"{ip_address}:{safe_name}"
+            if download_key not in RECENT_DOWNLOADS:
+                raise HTTPException(status_code=401, detail="Authentication required to download this file")
+            stored = RECENT_DOWNLOADS.get(download_key, {})
+            if time.time() - stored.get("time", 0) > 3600:
+                del RECENT_DOWNLOADS[download_key]
+                raise HTTPException(status_code=401, detail="Download link expired")
 
     media_type = _get_media_type(safe_name)
 
