@@ -58,6 +58,29 @@ export default function DownloadClient({ platform, defaultUrl, seoContent }: Pro
     })) || [],
   };
 
+  const videoObjectJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: `${platform} Video Downloader`,
+    description: seoContent.subheading,
+    thumbnailUrl: "/og-image.png",
+    uploadDate: new Date().toISOString().split("T")[0],
+    contentUrl: "https://gotot.app",
+    encodingFormat: "video/mp4",
+  };
+
+  const downloadActionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "DownloadAction",
+    target: "https://gotot.app/download",
+    object: {
+      "@type": "DataDownload",
+      contentUrl: "https://gotot.app/download",
+      encodingFormat: "video/mp4",
+    },
+    actionStatus: "https://schema.org/PotentialActionStatus",
+  };
+
   return (
     <>
       <script
@@ -67,6 +90,14 @@ export default function DownloadClient({ platform, defaultUrl, seoContent }: Pro
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(videoObjectJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(downloadActionJsonLd) }}
       />
       <div className="pt-32 pb-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

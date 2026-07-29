@@ -25,6 +25,18 @@ export default function Home() {
   return (
     <>
       <Hero />
+      {process.env.NEXT_PUBLIC_ADSENSE_ID && (
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+          <ins
+            className="adsbygoogle"
+            style={{ display: "block", textAlign: "center" }}
+            data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_ID}
+            data-ad-slot="6415948659"
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          />
+        </section>
+      )}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         <DownloadForm />
         <ResultCard />
@@ -32,6 +44,20 @@ export default function Home() {
       <Features />
       <RecentDownloads />
       <AffiliateSection />
+      {process.env.NEXT_PUBLIC_ADSENSE_ID && (
+        <section className="py-8 bg-gray-50/50 dark:bg-gray-900/50">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <ins
+              className="adsbygoogle"
+              style={{ display: "block", textAlign: "center" }}
+              data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_ID}
+              data-ad-slot="6415948659"
+              data-ad-format="auto"
+              data-full-width-responsive="true"
+            />
+          </div>
+        </section>
+      )}
       <section className="py-16 bg-gray-50/50 dark:bg-gray-900/50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-4">

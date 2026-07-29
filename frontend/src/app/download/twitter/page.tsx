@@ -10,6 +10,11 @@ export const metadata: Metadata = {
     description: "Download Twitter/X videos and GIFs in high quality. Save any Twitter video for free.",
     url: "https://gotot.app/download/twitter",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Twitter/X Video Downloader - GoTot",
+    description: "Download Twitter/X videos and GIFs in high quality. Save any Twitter video for free.",
+  },
   alternates: {
     canonical: "https://gotot.app/download/twitter",
   },

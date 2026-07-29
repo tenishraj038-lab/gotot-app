@@ -3,6 +3,20 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "DMCA / Takedown - GoTot",
   description: "Submit a DMCA takedown request to GoTot for copyright infringement claims.",
+  openGraph: {
+    title: "DMCA / Takedown - GoTot",
+    description: "Submit a DMCA takedown request to GoTot for copyright infringement claims.",
+    type: "website",
+    url: "https://gotot.app/dmca",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DMCA / Takedown - GoTot",
+    description: "Submit a DMCA takedown request to GoTot for copyright infringement claims.",
+  },
+  alternates: {
+    canonical: "https://gotot.app/dmca",
+  },
 };
 
 export default function DmcaPage() {

@@ -11,6 +11,11 @@ export const metadata: Metadata = {
     description: "Download Facebook videos and Reels. Free and fast.",
     url: "https://gotot.app/download/facebook",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Facebook Video Downloader - GoTot",
+    description: "Download Facebook videos and Reels. Free and fast.",
+  },
   alternates: {
     canonical: "https://gotot.app/download/facebook",
   },

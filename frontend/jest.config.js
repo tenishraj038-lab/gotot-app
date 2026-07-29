@@ -1,6 +1,3 @@
-// Force test mode — this system has NODE_ENV=production globally
-process.env.NODE_ENV = "test";
-
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
   testEnvironment: "jsdom",

@@ -273,7 +273,7 @@ All settings are managed via `app/config.py` using Pydantic's `BaseSettings`. En
 
 ```
 SECRET_KEY=your-secret-key
-DATABASE_URL=postgresql+asyncpg://gotot:gotot_pass@postgres:5432/gotot
+DATABASE_URL=postgresql+asyncpg://gotot:your_secure_password@postgres:5432/gotot
 REDIS_URL=redis://redis:6379/0
 CELERY_BROKER_URL=redis://redis:6379/1
 ENVIRONMENT=production

@@ -24,7 +24,7 @@ def _fix_redis_url(url: str) -> str:
 
 class Settings(BaseSettings):
     secret_key: str
-    database_url: str = "postgresql+asyncpg://gotot:gotot_pass@localhost:5432/gotot"
+    database_url: str = ""
 
     @field_validator("database_url", mode="before")
     @classmethod

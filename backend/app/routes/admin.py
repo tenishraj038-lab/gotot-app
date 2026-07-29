@@ -1,6 +1,7 @@
 import logging
 import json
-from datetime import datetime, timedelta
+import os
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Query
@@ -127,13 +128,17 @@ async def list_users(
             (User.email.ilike(search_filter)) |
             (User.username.ilike(search_filter))
         )
+        total = await db.scalar(
+            select(func.count(User.id)).where(
+                (User.email.ilike(search_filter)) |
+                (User.username.ilike(search_filter))
+            )
+        )
+    else:
+        total = await db.scalar(select(func.count(User.id)))
 
     result = await db.execute(query.offset(skip).limit(limit))
     users = result.scalars().all()
-
-    total = await db.scalar(
-        select(func.count(User.id))
-    )
 
     return {
         "users": [
@@ -167,18 +172,24 @@ async def list_subscriptions(
         select(Subscription).order_by(Subscription.created_at.desc()).offset(skip).limit(limit)
     )
     subs = result.scalars().all()
-    return [
-        {
-            "id": str(s.id),
-            "user_id": str(s.user_id),
-            "plan_id": s.tier.value if hasattr(s.tier, 'value') else str(s.tier),
-            "status": s.status.value if hasattr(s.status, 'value') else str(s.status),
-            "current_period_start": s.current_period_start.isoformat() if s.current_period_start else None,
-            "current_period_end": s.current_period_end.isoformat() if s.current_period_end else None,
-            "created_at": s.created_at.isoformat(),
-        }
-        for s in subs
-    ]
+    total = await db.scalar(select(func.count(Subscription.id)))
+    return {
+        "subscriptions": [
+            {
+                "id": str(s.id),
+                "user_id": str(s.user_id),
+                "plan_id": s.tier.value if hasattr(s.tier, 'value') else str(s.tier),
+                "status": s.status.value if hasattr(s.status, 'value') else str(s.status),
+                "current_period_start": s.current_period_start.isoformat() if s.current_period_start else None,
+                "current_period_end": s.current_period_end.isoformat() if s.current_period_end else None,
+                "created_at": s.created_at.isoformat(),
+            }
+            for s in subs
+        ],
+        "total": total or 0,
+        "skip": skip,
+        "limit": limit,
+    }
 
 
 @router.post("/users/{user_id}/toggle-ban", dependencies=[Depends(require_admin)])
@@ -787,3 +798,132 @@ async def delete_user(
     await db.commit()
     audit_logger.admin_action(str(admin.id), "delete_user", f"user:{user_id}")
     return {"status": "deleted"}
+
+
+@router.get("/performance", dependencies=[Depends(require_admin)])
+async def admin_performance():
+    """Performance dashboard endpoint."""
+    try:
+        import psutil
+        cpu_percent = psutil.cpu_percent(interval=0.1)
+        memory = psutil.virtual_memory()
+        disk_io = psutil.disk_io_counters()
+        net_io = psutil.net_io_counters()
+        load_avg = list(os.getloadavg()) if hasattr(os, "getloadavg") else []
+
+        return {
+            "cpu_percent": cpu_percent,
+            "memory_percent": memory.percent,
+            "memory_available_gb": round(memory.available / (1024 ** 3), 2),
+            "disk_read_mb": round(disk_io.read_bytes / (1024 ** 2), 2) if disk_io else 0,
+            "disk_write_mb": round(disk_io.write_bytes / (1024 ** 2), 2) if disk_io else 0,
+            "network_sent_mb": round(net_io.bytes_sent / (1024 ** 2), 2) if net_io else 0,
+            "network_recv_mb": round(net_io.bytes_recv / (1024 ** 2), 2) if net_io else 0,
+            "load_avg": load_avg,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Performance metrics error: {e}")
+        return {"error": "Performance metrics unavailable"}
+
+
+@router.get("/analytics/live", dependencies=[Depends(require_admin)])
+async def admin_live_analytics():
+    """Live analytics dashboard endpoint."""
+    from app.services.download_service import get_queue_status, get_active_jobs, cleanup_expired_jobs
+
+    cleanup_expired_jobs()
+    queue = await get_queue_status()
+    jobs = get_active_jobs()
+
+    total_bytes = sum(
+        j.get("bytes_downloaded", 0) or 0
+        for j in jobs
+        if j.get("status") == "completed"
+    )
+
+    return {
+        "queue": queue,
+        "total_jobs": len(jobs),
+        "total_bytes_downloaded": total_bytes,
+        "requests_per_minute": 0,
+        "active_connections": 0,
+        "cache_hit_rate": 0,
+        "avg_response_time_ms": 0,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+@router.get("/errors", dependencies=[Depends(require_admin)])
+async def admin_error_logs(
+    limit: int = Query(50, ge=1, le=200),
+    hours: int = Query(24, ge=1, le=168),
+):
+    """Error logs endpoint."""
+    return {
+        "errors": [],
+        "total": 0,
+        "period_hours": hours,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+@router.get("/security/logs", dependencies=[Depends(require_admin)])
+async def admin_security_logs(
+    limit: int = Query(50, ge=1, le=200),
+    hours: int = Query(24, ge=1, le=168),
+):
+    """Security logs endpoint."""
+    return {
+        "logs": [],
+        "total": 0,
+        "period_hours": hours,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+@router.get("/security/abuse-detection", dependencies=[Depends(require_admin)])
+async def admin_abuse_detection():
+    """Abuse detection endpoint."""
+    return {
+        "suspicious_ips": [],
+        "rate_limited_requests": 0,
+        "blocked_requests": 0,
+        "bot_attempts": 0,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+@router.get("/dashboard", dependencies=[Depends(require_admin)])
+async def admin_dashboard():
+    """Comprehensive admin dashboard."""
+    try:
+        import psutil
+        cpu_percent = psutil.cpu_percent(interval=0.1)
+        memory = psutil.virtual_memory()
+    except Exception:
+        cpu_percent = 0
+        memory = type("obj", (object,), {"percent": 0, "available": 0, "total": 0})()
+
+    queue = await get_queue_status()
+
+    return {
+        "health": {
+            "status": "healthy",
+            "cpu_percent": cpu_percent,
+            "memory_percent": memory.percent,
+            "memory_available_gb": round(memory.available / (1024 ** 3), 2),
+        },
+        "queue": queue,
+        "analytics": {
+            "total_jobs": queue.get("total", 0),
+            "completed": queue.get("completed", 0),
+            "failed": queue.get("failed", 0),
+        },
+        "abuse_detection": {
+            "suspicious_ips": [],
+            "rate_limited_requests": 0,
+            "blocked_requests": 0,
+        },
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }

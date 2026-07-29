@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Search, Link, Loader2, Music, Video, Twitter, Facebook, Globe, Clapperboard, Tv, Briefcase, Pin, PlayCircle, Image } from "lucide-react";
+import { Search, Link, Loader2, Music, Video, Twitter, Facebook, Globe, Clapperboard, Tv, Briefcase, Pin, PlayCircle } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { api } from "@/lib/api";
 import TermsModal from "./TermsModal";
@@ -144,7 +144,7 @@ export default function DownloadForm() {
     }
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const doSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLocalError(null);
 
@@ -168,6 +168,7 @@ export default function DownloadForm() {
         return;
       }
 
+      // Start info extraction immediately for faster preview
       const info = await api.getVideoInfo(url.trim());
       useStore.setState({ videoInfo: info, isLoading: false, error: null });
       addRecentUrl(url.trim());
@@ -188,7 +189,7 @@ export default function DownloadForm() {
   const handleTermsAccepted = () => {
     useStore.getState().setTermsAccepted(true);
     setTermsModalOpen(false);
-    handleSubmit(new Event("submit") as unknown as React.FormEvent);
+    doSubmit();
   };
 
   const handleTermsDeclined = () => {
@@ -201,7 +202,7 @@ export default function DownloadForm() {
 
   return (
     <div className="w-full max-w-3xl mx-auto">
-      <form onSubmit={handleSubmit} className="relative">
+      <form onSubmit={doSubmit} className="relative">
         <div
           className={`relative flex items-center transition-all duration-300 ${
             isFocused

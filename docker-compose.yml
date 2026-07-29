@@ -105,7 +105,7 @@ services:
       - "5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-gotot}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gotot_pass}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
       POSTGRES_DB: ${POSTGRES_DB:-gotot}
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -151,7 +151,7 @@ services:
     profiles: ["backup"]
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-gotot}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gotot_pass}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
       POSTGRES_DB: ${POSTGRES_DB:-gotot}
       PGHOST: postgres
     depends_on:

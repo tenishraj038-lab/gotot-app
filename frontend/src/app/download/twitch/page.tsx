@@ -11,6 +11,11 @@ export const metadata: Metadata = {
     description: "Download Twitch clips and VODs. Free and fast.",
     url: "https://gotot.app/download/twitch",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Twitch Clip Downloader - GoTot",
+    description: "Download Twitch clips and VODs. Free and fast.",
+  },
   alternates: {
     canonical: "https://gotot.app/download/twitch",
   },

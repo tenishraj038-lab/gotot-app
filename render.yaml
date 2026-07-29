@@ -13,7 +13,7 @@ services:
       - key: ENVIRONMENT
         value: production
       - key: SECRET_KEY
-        value: "98110005c95b01dbc201b0c2e24ffbf7628b22787706329e27b56ededb85aca3"
+        value: "${SECRET_KEY}"
       - key: LOG_LEVEL
         value: info
       - key: ALLOWED_ORIGINS
@@ -39,9 +39,9 @@ services:
       - key: SMTP_PORT
         value: "587"
       - key: DATABASE_URL
-        value: "postgresql+asyncpg://postgres:Blackraise%40123@db.uqbuizupqdtjzdhpixcz.supabase.co:6543/postgres"
+        value: "${DATABASE_URL}"
       - key: REDIS_URL
-        value: "rediss://default:Blackraise%40123@electric-opossum-178093.upstash.io:6379"
+        value: "${REDIS_URL}"
       - key: RAZORPAY_KEY_ID
         sync: false
       - key: RAZORPAY_KEY_SECRET

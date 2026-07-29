@@ -4,6 +4,20 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Top 10 Video Downloader Tips for 2025 - GoTot Blog",
   description: "Master video downloading with these 10 pro tips. Download from TikTok, Instagram, and more in the best quality.",
+  openGraph: {
+    title: "Top 10 Video Downloader Tips for 2025 - GoTot Blog",
+    description: "Master video downloading with these 10 pro tips. Download from TikTok, Instagram, and more in the best quality.",
+    type: "article",
+    url: "https://gotot.app/blog/top-10-video-downloader-tips",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Top 10 Video Downloader Tips for 2025 - GoTot Blog",
+    description: "Master video downloading with these 10 pro tips. Download from TikTok, Instagram, and more in the best quality.",
+  },
+  alternates: {
+    canonical: "https://gotot.app/blog/top-10-video-downloader-tips",
+  },
 };
 
 export default function Post() {

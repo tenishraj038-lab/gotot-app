@@ -266,7 +266,7 @@ async def get_video_info(request: Request, data: InfoRequest, db: AsyncSession =
         if not platform:
             raise HTTPException(
                 status_code=400,
-                detail="Unsupported URL. We support 15+ platforms including TikTok, Instagram, X, Facebook, Reddit, Vimeo, and more.",
+                detail="Unsupported URL. We support 10 platforms including TikTok, Instagram, X, Facebook, Reddit, Vimeo, and more.",
             )
 
         provider = __import__("app.providers", fromlist=["provider_registry"]).provider_registry.get(platform)
@@ -681,7 +681,12 @@ async def get_history(
     """Get download history for authenticated user."""
     user = await get_user_from_request(request, db)
     if not user:
-        return []
+        return {"history": [], "total": 0, "skip": skip, "limit": limit}
+
+    count_result = await db.execute(
+        select(func.count(DownloadHistory.id)).where(DownloadHistory.user_id == user.id)
+    )
+    total = count_result.scalar() or 0
 
     result = await db.execute(
         select(DownloadHistory)
@@ -690,44 +695,63 @@ async def get_history(
         .offset(skip).limit(limit)
     )
     records = result.scalars().all()
-    return [
-        {
-            "id": str(r.id),
-            "url": r.url,
-            "title": r.title,
-            "thumbnail_url": r.thumbnail_url,
-            "platform": r.platform,
-            "format": r.format,
-            "status": r.status,
-            "file_size": r.file_size,
-            "created_at": r.created_at.isoformat() if r.created_at else None,
-        }
-        for r in records
-    ]
+    return {
+        "history": [
+            {
+                "id": str(r.id),
+                "url": r.url,
+                "title": r.title,
+                "thumbnail_url": r.thumbnail_url,
+                "platform": r.platform,
+                "format": r.format,
+                "status": r.status,
+                "file_size": r.file_size,
+                "created_at": r.created_at.isoformat() if r.created_at else None,
+            }
+            for r in records
+        ],
+        "total": total,
+        "skip": skip,
+        "limit": limit,
+    }
 
 
 @router.get("/recent")
-async def get_recent_downloads(limit: int = 10, db: AsyncSession = Depends(get_db)):
+async def get_recent_downloads(
+    skip: int = 0,
+    limit: int = 10,
+    db: AsyncSession = Depends(get_db),
+):
     """Get recent completed downloads (public feed)."""
+    count_result = await db.execute(
+        select(func.count(DownloadHistory.id)).where(DownloadHistory.status == "completed")
+    )
+    total = count_result.scalar() or 0
+
     result = await db.execute(
         select(DownloadHistory)
         .where(DownloadHistory.status == "completed")
         .order_by(DownloadHistory.created_at.desc())
-        .limit(limit)
+        .offset(skip).limit(limit)
     )
     records = result.scalars().all()
-    return [
-        {
-            "id": str(r.id),
-            "platform": r.platform,
-            "format": r.format,
-            "file_size": r.file_size,
-            "title": r.title,
-            "thumbnail_url": r.thumbnail_url,
-            "created_at": r.created_at.isoformat() if r.created_at else None,
-        }
-        for r in records
-    ]
+    return {
+        "recent": [
+            {
+                "id": str(r.id),
+                "platform": r.platform,
+                "format": r.format,
+                "file_size": r.file_size,
+                "title": r.title,
+                "thumbnail_url": r.thumbnail_url,
+                "created_at": r.created_at.isoformat() if r.created_at else None,
+            }
+            for r in records
+        ],
+        "total": total,
+        "skip": skip,
+        "limit": limit,
+    }
 
 
 @router.post("/subtitles")
@@ -762,6 +786,14 @@ async def search_downloads(
         raise HTTPException(status_code=401, detail="Authentication required")
 
     safe_q = re.sub(r'[\\%_"]', '', q)[:200]
+    count_result = await db.execute(
+        select(func.count(DownloadHistory.id)).where(
+            DownloadHistory.user_id == user.id,
+            DownloadHistory.title.ilike(f"%{safe_q}%") | DownloadHistory.url.ilike(f"%{safe_q}%"),
+        )
+    )
+    total = count_result.scalar() or 0
+
     result = await db.execute(
         select(DownloadHistory)
         .where(
@@ -772,19 +804,24 @@ async def search_downloads(
         .offset(skip).limit(limit)
     )
     records = result.scalars().all()
-    return [
-        {
-            "id": str(r.id),
-            "url": r.url,
-            "title": r.title,
-            "platform": r.platform,
-            "format": r.format,
-            "status": r.status,
-            "file_size": r.file_size,
-            "created_at": r.created_at.isoformat() if r.created_at else None,
-        }
-        for r in records
-    ]
+    return {
+        "results": [
+            {
+                "id": str(r.id),
+                "url": r.url,
+                "title": r.title,
+                "platform": r.platform,
+                "format": r.format,
+                "status": r.status,
+                "file_size": r.file_size,
+                "created_at": r.created_at.isoformat() if r.created_at else None,
+            }
+            for r in records
+        ],
+        "total": total,
+        "skip": skip,
+        "limit": limit,
+    }
 
 
 # ─── Cookie/Auth Management ──────────────────────────────────────────

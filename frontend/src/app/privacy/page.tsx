@@ -3,6 +3,20 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Privacy Policy - GoTot",
   description: "GoTot Privacy Policy - Learn how we collect, use, and protect your data.",
+  openGraph: {
+    title: "Privacy Policy - GoTot",
+    description: "GoTot Privacy Policy - Learn how we collect, use, and protect your data.",
+    type: "website",
+    url: "https://gotot.app/privacy",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy Policy - GoTot",
+    description: "GoTot Privacy Policy - Learn how we collect, use, and protect your data.",
+  },
+  alternates: {
+    canonical: "https://gotot.app/privacy",
+  },
 };
 
 export default function PrivacyPage() {
@@ -51,7 +65,7 @@ export default function PrivacyPage() {
           </ul>
 
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mt-8">6. Cookies</h2>
-          <p>We use essential cookies for authentication and service functionality. With your explicit consent, we also use analytics cookies (Google Analytics) to understand how our service is used and improve your experience. You can withdraw consent at any time by clearing your site data.</p>
+          <p>We use essential cookies for authentication and service functionality. With your explicit consent, we also use analytics cookies (Google Analytics) to understand how our service is used and improve your experience, and advertising cookies to deliver relevant ads (Google AdSense). You can withdraw consent at any time by clearing your site data or using our cookie consent banner.</p>
 
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mt-8">7. Your Rights (GDPR &amp; Similar)</h2>
           <p>Depending on your jurisdiction, you may have the right to access, correct, delete, or export your personal data. You may also object to or restrict certain processing. To exercise these rights, contact us at privacy@gotot.app. We will respond within 30 days.</p>

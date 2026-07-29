@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Loader2, Download, RefreshCw, CheckCircle2, XCircle, Clock } from "lucide-react";
 
 interface QueueProgressProps {
@@ -37,9 +36,8 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function QueueProgress({ taskId, wsUrl, onComplete, onError }: QueueProgressProps) {
   const [status, setStatus] = useState<TaskStatus | null>(null);
-  const [pollCount, setPollCount] = useState(0);
+  const pollCount = useRef(0);
   const maxPolls = 600; // 10 minutes at 1s intervals
-
   const poll = useCallback(async () => {
     try {
       const res = await fetch(`/api/download/queue/${taskId}`);
@@ -61,18 +59,18 @@ export default function QueueProgress({ taskId, wsUrl, onComplete, onError }: Qu
   }, [taskId, onComplete, onError]);
 
   useEffect(() => {
-    if (pollCount >= maxPolls) {
-      onError?.("Download timed out. Please try again.");
-      return;
-    }
-
     const timer = setInterval(() => {
-      setPollCount((p) => p + 1);
+      if (pollCount.current >= maxPolls) {
+        onError?.("Download timed out. Please try again.");
+        clearInterval(timer);
+        return;
+      }
+      pollCount.current += 1;
       poll();
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [poll, pollCount, maxPolls, onError]);
+  }, [poll, onError, maxPolls]);
 
   useEffect(() => {
     if (!wsUrl) return;
@@ -105,9 +103,7 @@ export default function QueueProgress({ taskId, wsUrl, onComplete, onError }: Qu
   const iconColor = STATUS_COLORS[status.status] || "text-gray-400";
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
+    <div
       className="w-full max-w-md mx-auto"
     >
       <div className="p-4 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-lg">
@@ -131,13 +127,11 @@ export default function QueueProgress({ taskId, wsUrl, onComplete, onError }: Qu
         </div>
 
         <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-          <motion.div
+          <div
             className={`h-full rounded-full transition-all duration-500 ${
               status.status === "failed" ? "bg-red-500" : "bg-gradient-to-r from-primary-500 to-accent-500"
             }`}
-            initial={{ width: 0 }}
-            animate={{ width: `${status.progress}%` }}
-            transition={{ duration: 0.5 }}
+            style={{ width: `${status.progress}%` }}
           />
         </div>
 
@@ -145,6 +139,6 @@ export default function QueueProgress({ taskId, wsUrl, onComplete, onError }: Qu
           <p className="mt-2 text-xs text-red-500">{status.error}</p>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }

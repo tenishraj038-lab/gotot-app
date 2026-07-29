@@ -14,7 +14,7 @@ All configuration for GoTot is managed through environment variables. Copy `back
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `DATABASE_URL` | `postgresql+asyncpg://gotot:gotot_pass@localhost:5432/gotot` | Async database connection URL. Supports PostgreSQL and SQLite. |
+| `DATABASE_URL` | `postgresql+asyncpg://gotot:your_secure_password@localhost:5432/gotot` | Async database connection URL. Supports PostgreSQL and SQLite. |
 
 ## Redis
 

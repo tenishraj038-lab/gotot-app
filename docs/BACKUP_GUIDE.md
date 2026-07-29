@@ -66,7 +66,7 @@ The backup service inherits database credentials from the Compose environment:
 ```yaml
 environment:
   POSTGRES_USER: ${POSTGRES_USER:-gotot}
-  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gotot_pass}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
   POSTGRES_DB: ${POSTGRES_DB:-gotot}
   PGHOST: postgres
 ```

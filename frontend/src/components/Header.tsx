@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Moon, Sun, Github, User, LogOut, LayoutDashboard, Menu, X, Globe, Bell } from "lucide-react";
+import { Moon, Sun, Github, User, LogOut, LayoutDashboard, Menu, X, Bell } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { loadTokens, clearTokens, getAuthToken, api } from "@/lib/api";
 import { useRouter } from "next/navigation";
@@ -40,7 +40,7 @@ export default function Header() {
   const router = useRouter();
 
   useEffect(() => {
-    const saved = localStorage.getItem("darkMode") === "true";
+    const saved = localStorage.getItem("gotot_theme") === "dark";
     if (saved !== isDarkMode) {
       document.documentElement.classList.toggle("dark", saved);
     }

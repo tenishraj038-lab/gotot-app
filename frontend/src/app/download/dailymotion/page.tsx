@@ -11,6 +11,11 @@ export const metadata: Metadata = {
     description: "Download Dailymotion videos. Free and fast.",
     url: "https://gotot.app/download/dailymotion",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Dailymotion Video Downloader - GoTot",
+    description: "Download Dailymotion videos. Free and fast.",
+  },
   alternates: {
     canonical: "https://gotot.app/download/dailymotion",
   },

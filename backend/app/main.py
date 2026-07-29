@@ -153,8 +153,6 @@ async def health():
         "status": "ok" if db_status == "connected" else "degraded",
         "version": "3.2.0",
         "environment": settings.environment,
-        "db_url_prefix": settings.database_url.split("://")[0] if "://" in settings.database_url else "unknown",
-        "redis_url_prefix": settings.redis_url.split("://")[0] if "://" in settings.redis_url else "unknown",
         "database": db_status,
         "database_latency_ms": db_latency_ms,
         "ffmpeg": ffmpeg,

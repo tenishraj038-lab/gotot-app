@@ -3,6 +3,20 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Copyright Policy - GoTot",
   description: "GoTot Copyright Policy — respecting intellectual property and complying with copyright laws.",
+  openGraph: {
+    title: "Copyright Policy - GoTot",
+    description: "GoTot Copyright Policy — respecting intellectual property and complying with copyright laws.",
+    type: "website",
+    url: "https://gotot.app/copyright",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Copyright Policy - GoTot",
+    description: "GoTot Copyright Policy — respecting intellectual property and complying with copyright laws.",
+  },
+  alternates: {
+    canonical: "https://gotot.app/copyright",
+  },
 };
 
 export default function CopyrightPage() {

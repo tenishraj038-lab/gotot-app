@@ -11,6 +11,11 @@ export const metadata: Metadata = {
     description: "Download Vimeo videos in highest quality. Free and fast.",
     url: "https://gotot.app/download/vimeo",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Vimeo Video Downloader - GoTot",
+    description: "Download Vimeo videos in highest quality. Free and fast.",
+  },
   alternates: {
     canonical: "https://gotot.app/download/vimeo",
   },

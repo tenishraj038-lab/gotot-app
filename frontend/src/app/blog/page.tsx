@@ -4,6 +4,22 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "GoTot Blog - Video Downloading Tips & Guides",
   description: "Learn how to download videos from TikTok, Instagram, and more. Tips, tricks, and guides.",
+  openGraph: {
+    title: "GoTot Blog - Video Downloading Tips & Guides",
+    description: "Learn how to download videos from TikTok, Instagram, and more. Tips, tricks, and guides.",
+    type: "website",
+    url: "https://gotot.app/blog",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "GoTot Blog" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GoTot Blog - Video Downloading Tips & Guides",
+    description: "Learn how to download videos from TikTok, Instagram, and more. Tips, tricks, and guides.",
+    images: ["/og-image.png"],
+  },
+  alternates: {
+    canonical: "https://gotot.app/blog",
+  },
 };
 
 const posts = [
@@ -22,14 +38,6 @@ const posts = [
     date: "2025-06-10",
     readTime: "4 min read",
     category: "Tutorial",
-  },
-  {
-    slug: "tiktok-vs-instagram-downloader",
-    title: "TikTok vs Instagram Downloader: Which One Do You Need?",
-    excerpt: "Compare TikTok and Instagram downloaders. Features, quality, formats, and which platform fits your needs.",
-    date: "2025-06-05",
-    readTime: "6 min read",
-    category: "Comparison",
   },
 ];
 

@@ -11,6 +11,11 @@ export const metadata: Metadata = {
     description: "Download Pinterest videos and Idea Pins. Free and fast.",
     url: "https://gotot.app/download/pinterest",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Pinterest Video Downloader - GoTot",
+    description: "Download Pinterest videos and Idea Pins. Free and fast.",
+  },
   alternates: {
     canonical: "https://gotot.app/download/pinterest",
   },

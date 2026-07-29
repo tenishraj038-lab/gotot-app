@@ -62,8 +62,9 @@ export default function CookieConsent() {
                 </h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
                   We use essential cookies to provide our service, optional analytics cookies to
-                  improve your experience, and advertising cookies to show relevant ads. By accepting,
-                  you consent to our use of analytics and advertising cookies. See our{" "}
+                  improve your experience, and advertising cookies to show relevant ads (Google
+                  AdSense). By accepting, you consent to our use of analytics and advertising
+                  cookies. See our{" "}
                   <a href="/privacy" className="text-primary-600 hover:text-primary-500 underline">
                     Privacy Policy
                   </a>{" "}
@@ -89,7 +90,7 @@ export default function CookieConsent() {
                 onClick={handleDecline}
                 className="px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition-colors"
               >
-                Essential Only
+                Essential Only (no ads)
               </button>
             </div>
           </div>

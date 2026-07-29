@@ -1,7 +1,6 @@
 import time
 import uuid
 import logging
-import time
 from typing import Optional
 
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -42,9 +41,9 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "1; mode=block"
-        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
+        response.headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains; preload"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-        response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+        response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=(), payment=(), interest-cohort=()"
         response.headers["X-Request-ID"] = request_id
         response.headers["X-DNS-Prefetch-Control"] = "off"
         response.headers["X-Download-Options"] = "noopen"
@@ -55,14 +54,16 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         if settings.environment == "production":
             csp_parts = [
                 "default-src 'self'",
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://www.googletagmanager.com https://pagead2.googlesyndication.com https://ads.google.com https://doubleclick.net https://ad.doubleclick.net https://tpc.googlesyndication.com https://googleads.g.doubleclick.net https://www.gstatic.com",
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://www.googletagmanager.com https://pagead2.googlesyndication.com https://ads.google.com https://doubleclick.net https://ad.doubleclick.net https://tpc.googlesyndication.com https://googleads.g.doubleclick.net https://www.gstatic.com https://www.google-analytics.com",
                 "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
                 "img-src 'self' data: https: blob:",
                 "font-src 'self' https://fonts.gstatic.com",
-                "connect-src 'self' https://api.razorpay.com https://sentry.io",
+                "connect-src 'self' https://api.razorpay.com https://sentry.io https://www.google-analytics.com",
                 "frame-src 'self' https://checkout.razorpay.com https://ads.google.com https://doubleclick.net https://ad.doubleclick.net https://tpc.googlesyndication.com https://googleads.g.doubleclick.net",
-                "media-src 'self'",
+                "media-src 'self' blob:",
                 "object-src 'none'",
+                "base-uri 'self'",
+                "form-action 'self'",
             ]
             response.headers["Content-Security-Policy"] = "; ".join(csp_parts)
 

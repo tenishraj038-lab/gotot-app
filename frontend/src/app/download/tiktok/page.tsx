@@ -11,6 +11,11 @@ export const metadata: Metadata = {
     description: "Download TikTok videos without watermark. Free and fast.",
     url: "https://gotot.app/download/tiktok",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "TikTok Video Downloader - GoTot",
+    description: "Download TikTok videos without watermark. Free and fast.",
+  },
   alternates: {
     canonical: "https://gotot.app/download/tiktok",
   },

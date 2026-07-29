@@ -11,6 +11,11 @@ export const metadata: Metadata = {
     description: "Download LinkedIn videos. Free and fast.",
     url: "https://gotot.app/download/linkedin",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "LinkedIn Video Downloader - GoTot",
+    description: "Download LinkedIn videos. Free and fast.",
+  },
   alternates: {
     canonical: "https://gotot.app/download/linkedin",
   },

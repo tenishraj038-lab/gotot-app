@@ -3,6 +3,20 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Terms of Service - GoTot",
   description: "GoTot Terms of Service — Please read these terms carefully before using our video downloading service.",
+  openGraph: {
+    title: "Terms of Service - GoTot",
+    description: "GoTot Terms of Service — Please read these terms carefully before using our video downloading service.",
+    type: "website",
+    url: "https://gotot.app/terms",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Terms of Service - GoTot",
+    description: "GoTot Terms of Service — Please read these terms carefully before using our video downloading service.",
+  },
+  alternates: {
+    canonical: "https://gotot.app/terms",
+  },
 };
 
 export default function TermsPage() {
@@ -18,14 +32,14 @@ export default function TermsPage() {
 
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mt-8">2. Description of Service</h2>
           <p>GoTot provides a platform that allows users to download videos from supported third-party websites. The Service is provided &quot;as is&quot; and we make no guarantees about its availability or functionality.</p>
-          <p className="mt-2">Supported platforms include TikTok, Instagram, Twitter/X, Facebook, Reddit, Vimeo, Dailymotion, Twitch, LinkedIn, Pinterest, Snapchat, Bilibili, SoundCloud, Rumble, and Odysee. GoTot is an independent service and is not affiliated with, endorsed by, or sponsored by any of these platforms. All trademarks belong to their respective owners. Each platform has its own Terms of Service, and it is your responsibility to comply with both our terms and the terms of the platform from which you download content.</p>
+           <p className="mt-2">Supported platforms include TikTok, Instagram, Twitter/X, Facebook, Reddit, Vimeo, Dailymotion, Twitch, LinkedIn, and Pinterest. GoTot is an independent service and is not affiliated with, endorsed by, or sponsored by any of these platforms. All trademarks belong to their respective owners. Each platform has its own Terms of Service, and it is your responsibility to comply with both our terms and the terms of the platform from which you download content.</p>
 
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mt-8">3. User Responsibilities & Copyright Compliance</h2>
           <p>You agree to:</p>
           <ul className="list-disc pl-6 space-y-2">
             <li>Only download content that you own or have explicit permission to download.</li>
             <li>Comply with all applicable laws, including copyright laws, and third-party platform terms of service.</li>
-            <li>Not use the Service to violate any platform&apos;s Terms of Service, including but not limited to TikTok, Instagram, X (Twitter), Facebook, Reddit, Vimeo, Dailymotion, Twitch, LinkedIn, Pinterest, Snapchat, Bilibili, SoundCloud, Rumble, and Odysee.</li>
+             <li>Not use the Service to violate any platform&apos;s Terms of Service, including but not limited to TikTok, Instagram, X (Twitter), Facebook, Reddit, Vimeo, Dailymotion, Twitch, LinkedIn, and Pinterest.</li>
             <li>Not use the Service for any illegal or unauthorized purpose.</li>
             <li>Not attempt to circumvent any usage limits, platform restrictions, or security measures.</li>
             <li>Not upload, distribute, or facilitate distribution of malicious or unauthorized content through the Service.</li>

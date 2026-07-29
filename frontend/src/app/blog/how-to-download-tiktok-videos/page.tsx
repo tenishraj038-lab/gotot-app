@@ -4,6 +4,20 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "How to Download TikTok Videos Without Watermark - GoTot Blog",
   description: "Complete guide to downloading TikTok videos without watermark. Save TikTok content in HD quality for free.",
+  openGraph: {
+    title: "How to Download TikTok Videos Without Watermark - GoTot Blog",
+    description: "Complete guide to downloading TikTok videos without watermark. Save TikTok content in HD quality for free.",
+    type: "article",
+    url: "https://gotot.app/blog/how-to-download-tiktok-videos",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "How to Download TikTok Videos Without Watermark - GoTot Blog",
+    description: "Complete guide to downloading TikTok videos without watermark. Save TikTok content in HD quality for free.",
+  },
+  alternates: {
+    canonical: "https://gotot.app/blog/how-to-download-tiktok-videos",
+  },
 };
 
 export default function Post() {

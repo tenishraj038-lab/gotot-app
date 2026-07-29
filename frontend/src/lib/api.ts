@@ -72,7 +72,15 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     config.body = JSON.stringify(body);
   }
 
-  const response = await fetch(`${API_BASE}${endpoint}`, config);
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE}${endpoint}`, config);
+  } catch (err) {
+    if (err instanceof TypeError && err.message.includes("fetch")) {
+      throw new Error("Network error. Please check your connection and try again.");
+    }
+    throw err;
+  }
 
   if (response.status === 401 && refreshToken) {
     const refreshResponse = await fetch(`${API_BASE}/auth/refresh`, {

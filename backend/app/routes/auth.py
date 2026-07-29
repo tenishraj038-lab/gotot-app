@@ -65,6 +65,7 @@ class TokenResponse(BaseModel):
 
 
 @router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
+@limiter.limit("5/minute")
 async def register(request: Request, data: RegisterRequest, db: AsyncSession = Depends(get_db)):
     existing = await db.execute(
         select(User).where((User.email == data.email) | (User.username == data.username))
@@ -94,6 +95,7 @@ async def register(request: Request, data: RegisterRequest, db: AsyncSession = D
 
 
 @router.post("/login", response_model=TokenResponse)
+@limiter.limit("10/minute")
 async def login(request: Request, data: LoginRequest, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.email == data.email))
     user = result.scalar_one_or_none()
@@ -334,7 +336,9 @@ class ForgotPasswordRequest(BaseModel):
 
 
 @router.post("/forgot-password")
+@limiter.limit("3/minute")
 async def forgot_password(
+    request: Request,
     data: ForgotPasswordRequest,
     db: AsyncSession = Depends(get_db),
 ):

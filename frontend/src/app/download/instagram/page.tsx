@@ -10,6 +10,11 @@ export const metadata: Metadata = {
     description: "Download Instagram videos, Reels, and Stories. Save IG content in high quality for free.",
     url: "https://gotot.app/download/instagram",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Instagram Video Downloader - GoTot",
+    description: "Download Instagram videos, Reels, and Stories. Save IG content in high quality for free.",
+  },
   alternates: {
     canonical: "https://gotot.app/download/instagram",
   },

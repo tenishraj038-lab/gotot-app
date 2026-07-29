@@ -4,9 +4,16 @@ import asyncio
 from typing import Set, Dict
 
 import redis.asyncio as aioredis
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Request
+from fastapi import Depends, HTTPException
 
 from app.config import get_settings
+from app.services.auth_service import decode_token, parse_user_id
+from app.models.database import get_db
+from app.models.user import User
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 logger = logging.getLogger("gotot.ws")
 settings = get_settings()
@@ -84,8 +91,23 @@ router = APIRouter(tags=["websocket"])
 manager = ConnectionManager()
 
 
+async def get_ws_user(request: Request, db: AsyncSession = Depends(get_db)) -> User:
+    auth_header = request.headers.get("Authorization", "")
+    if not auth_header.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    token = auth_header.split(" ")[1]
+    payload = decode_token(token)
+    if not payload:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    result = await db.execute(select(User).where(User.id == parse_user_id(payload.get("sub"))))
+    user = result.scalar_one_or_none()
+    if not user or not user.is_active:
+        raise HTTPException(status_code=401, detail="User not found")
+    return user
+
+
 @router.websocket("/ws/progress/{task_id}")
-async def websocket_progress(websocket: WebSocket, task_id: str):
+async def websocket_progress(websocket: WebSocket, task_id: str, user: User = Depends(get_ws_user)):
     await manager.connect(task_id, websocket)
     try:
         while True:

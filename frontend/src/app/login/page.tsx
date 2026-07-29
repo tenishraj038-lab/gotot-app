@@ -46,26 +46,18 @@ function LoginContent() {
 
       if (isRegister) {
         const username = `user_${Date.now().toString(36)}`;
-        const res = await api.register(trimmed, username, password);
-        if (res?.access_token) {
-          await handleSuccess(res);
+        const regRes = await api.register(trimmed, username, password);
+        if (regRes?.access_token) {
+          await handleSuccess(regRes);
           return;
         }
+        // Registration succeeded but no token — fall through to login
       }
 
       const loginRes = await api.login(trimmed, password);
       if (loginRes?.access_token) {
         await handleSuccess(loginRes);
         return;
-      }
-
-      if (!isRegister) {
-        const username = `user_${Date.now().toString(36)}`;
-        const regRes = await api.register(trimmed, username, password);
-        if (regRes?.access_token) {
-          await handleSuccess(regRes);
-          return;
-        }
       }
 
       setError("Login failed. Check your credentials.");

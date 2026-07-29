@@ -11,6 +11,11 @@ export const metadata: Metadata = {
     description: "Download Reddit videos with audio. Free and fast.",
     url: "https://gotot.app/download/reddit",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Reddit Video Downloader - GoTot",
+    description: "Download Reddit videos with audio. Free and fast.",
+  },
   alternates: {
     canonical: "https://gotot.app/download/reddit",
   },

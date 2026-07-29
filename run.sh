@@ -86,7 +86,7 @@ start_backup() {
   docker run --rm --network gotot_default \
     -e PGHOST=postgres -e PGPORT=5432 \
     -e POSTGRES_USER=${POSTGRES_USER:-gotot} \
-    -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-gotot_pass} \
+    -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set} \
     -e POSTGRES_DB=${POSTGRES_DB:-gotot} \
     -v "$ROOT_DIR/backups:/backups" \
     postgres:16-alpine /bin/sh -c \

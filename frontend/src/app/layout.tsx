@@ -3,12 +3,12 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AuthModal from "@/components/auth/AuthModal";
-import AdModal from "@/components/AdModal";
 import PaymentModal from "@/components/PaymentModal";
 import PwaRegister from "@/components/PwaRegister";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import NotificationBanner from "@/components/NotificationBanner";
 import CookieConsent from "@/components/CookieConsent";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://gotot.app"),
   openGraph: {
     title: "GoTot - Universal Video Downloader",
-    description: "Download videos from 11+ platforms. Fast, secure, and completely free.",
+    description: "Download videos from 10 platforms. Fast, secure, and completely free.",
     type: "website",
     siteName: "GoTot",
     locale: "en_US",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "GoTot - Universal Video Downloader",
-    description: "Download videos from 11+ platforms. Fast, secure, and completely free.",
+    description: "Download videos from 10 platforms. Fast, secure, and completely free.",
     images: ["/og-image.png"],
     creator: "@gotot",
   },
@@ -112,7 +112,6 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
         <link rel="canonical" href="https://gotot.app" />
         <link rel="alternate" hrefLang="en" href="https://gotot.app" />
-        <link rel="alternate" hrefLang="es" href="https://gotot.app/es" />
         <link rel="alternate" hrefLang="x-default" href="https://gotot.app" />
         <script
           type="application/ld+json"
@@ -168,31 +167,40 @@ export default function RootLayout({
         )}
         {process.env.NEXT_PUBLIC_ADSENSE_ID && (
           <script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
-            crossOrigin="anonymous"
+            dangerouslySetInnerHTML={{
+              __html: [
+                "if (localStorage.getItem('gotot_cookie_consent') === 'true') {",
+                "  var s = document.createElement('script');",
+                "  s.async = true;",
+                `  s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}';`,
+                "  s.crossOrigin = 'anonymous';",
+                "  document.head.appendChild(s);",
+                "}",
+              ].join("\n"),
+            }}
           />
         )}
       </head>
       <body className="min-h-screen flex flex-col bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 antialiased">
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary-600 focus:text-white focus:rounded-lg focus:text-sm focus:font-medium"
-        >
-          Skip to main content
-        </a>
-        <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
-        <Header />
-        <NotificationBanner />
-        <ErrorBoundary>
-          <main id="main-content" className="flex-1">{children}</main>
-        </ErrorBoundary>
-        <Footer />
-        <AuthModal />
-        <AdModal />
-        <PaymentModal />
-        <PwaRegister />
-        <CookieConsent />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary-600 focus:text-white focus:rounded-lg focus:text-sm focus:font-medium"
+          >
+            Skip to main content
+          </a>
+          <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
+          <Header />
+          <NotificationBanner />
+          <ErrorBoundary>
+            <main id="main-content" className="flex-1">{children}</main>
+          </ErrorBoundary>
+          <Footer />
+          <AuthModal />
+          <PaymentModal />
+          <PwaRegister />
+          <CookieConsent />
+        </ThemeProvider>
       </body>
     </html>
   );
