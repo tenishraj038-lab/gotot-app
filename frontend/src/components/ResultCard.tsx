@@ -33,7 +33,6 @@ export default function ResultCard() {
   const directDownload = useCallback(async () => {
     if (!videoInfo || downloading) return;
     setDownloading(true);
-    setError(null);
     setDone(false);
     setMsg("");
 
