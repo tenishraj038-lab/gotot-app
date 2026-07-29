@@ -29,7 +29,12 @@ export default function InstagramDownloaderPage() {
         heading: "Instagram Video Downloader",
         subheading: "Save Instagram Reels, videos, and Stories. Free and anonymous.",
         sections: [
-          { title: "How to download Instagram content", steps: ["Copy the Instagram post/Reel URL", "Paste it in the field above", "Select quality and format", "Download to your device"] },
+          { title: "How to download Instagram content", steps: [
+            { text: "Copy the Instagram post/Reel URL", image: "/og-image.png" },
+            { text: "Paste it in the field above", image: "/og-image.png" },
+            { text: "Select quality and format", image: "/og-image.png" },
+            { text: "Download to your device", image: "/og-image.png" },
+          ]},
           { title: "Supported Content", items: ["Instagram Reels", "Instagram Videos (posts)", "Instagram Stories", "IGTV videos"] },
         ],
         faq: [

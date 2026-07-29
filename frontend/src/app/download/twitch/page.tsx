@@ -30,7 +30,12 @@ export default function TwitchDownloaderPage() {
         heading: "Twitch Clip Downloader",
         subheading: "Save Twitch clips and highlights in high quality. Free and no sign-up.",
         sections: [
-          { title: "How to download Twitch content", steps: ["Find the Twitch clip or VOD", "Copy the URL from the address bar", "Paste the URL above", "Download in your preferred quality"] },
+          { title: "How to download Twitch content", steps: [
+            { text: "Find the Twitch clip or VOD", image: "/og-image.png" },
+            { text: "Copy the URL from the address bar", image: "/og-image.png" },
+            { text: "Paste the URL above", image: "/og-image.png" },
+            { text: "Download in your preferred quality", image: "/og-image.png" },
+          ]},
           { title: "Supported Content", items: ["Twitch Clips", "Twitch Highlights", "Twitch VODs (past broadcasts)", "Multiple quality options"] },
         ],
         faq: [

@@ -30,7 +30,12 @@ export default function PinterestDownloaderPage() {
         heading: "Pinterest Video Downloader",
         subheading: "Save Pinterest videos and Idea Pins in high quality. Free and anonymous.",
         sections: [
-          { title: "How to download Pinterest videos", steps: ["Find the Pinterest pin with a video", "Click the three dots and copy the link", "Paste the URL above", "Download in original quality"] },
+          { title: "How to download Pinterest videos", steps: [
+            { text: "Find the Pinterest pin with a video", image: "/og-image.png" },
+            { text: "Click the three dots and copy the link", image: "/og-image.png" },
+            { text: "Paste the URL above", image: "/og-image.png" },
+            { text: "Download in original quality", image: "/og-image.png" },
+          ]},
           { title: "Supported Content", items: ["Pinterest video pins", "Idea Pins (Storyboard)", "Pinterest GIF pins", "High quality downloads"] },
         ],
         faq: [

@@ -30,7 +30,12 @@ export default function VimeoDownloaderPage() {
         heading: "Vimeo Video Downloader",
         subheading: "Save Vimeo videos in original quality, up to 4K. Free and no sign-up.",
         sections: [
-          { title: "How to download Vimeo videos", steps: ["Open the Vimeo video page", "Copy the video URL from the address bar", "Paste the URL above", "Select format and download"] },
+          { title: "How to download Vimeo videos", steps: [
+            { text: "Open the Vimeo video page", image: "/og-image.png" },
+            { text: "Copy the video URL from the address bar", image: "/og-image.png" },
+            { text: "Paste the URL above", image: "/og-image.png" },
+            { text: "Select format and download", image: "/og-image.png" },
+          ]},
           { title: "Supported Features", items: ["Up to 4K resolution", "MP4 and WebM formats", "Audio extraction", "Multiple quality options"] },
         ],
         faq: [

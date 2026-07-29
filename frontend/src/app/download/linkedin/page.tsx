@@ -30,7 +30,12 @@ export default function LinkedInDownloaderPage() {
         heading: "LinkedIn Video Downloader",
         subheading: "Save LinkedIn videos and professional content. Free and no sign-up required.",
         sections: [
-          { title: "How to download LinkedIn videos", steps: ["Find the LinkedIn post with a video", "Click the three dots and copy the link", "Paste the URL above", "Download to your device"] },
+          { title: "How to download LinkedIn videos", steps: [
+            { text: "Find the LinkedIn post with a video", image: "/og-image.png" },
+            { text: "Click the three dots and copy the link", image: "/og-image.png" },
+            { text: "Paste the URL above", image: "/og-image.png" },
+            { text: "Download to your device", image: "/og-image.png" },
+          ]},
           { title: "Supported Content", items: ["LinkedIn feed videos", "LinkedIn Learning content", "LinkedIn article videos", "Company page videos"] },
         ],
         faq: [

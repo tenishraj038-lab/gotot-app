@@ -30,7 +30,12 @@ export default function RedditDownloaderPage() {
         heading: "Reddit Video Downloader",
         subheading: "Save Reddit videos with audio. Free, fast, and no sign-up required.",
         sections: [
-          { title: "How to download Reddit videos", steps: ["Find the Reddit post with the video", "Click Share and copy the link", "Paste the URL above", "Download with audio included"] },
+          { title: "How to download Reddit videos", steps: [
+            { text: "Find the Reddit post with the video", image: "/og-image.png" },
+            { text: "Click Share and copy the link", image: "/og-image.png" },
+            { text: "Paste the URL above", image: "/og-image.png" },
+            { text: "Download with audio included", image: "/og-image.png" },
+          ]},
           { title: "Supported Content", items: ["Reddit videos (v.redd.it)", "Reddit GIFs (RedGifs)", "Reddit gallery videos", "All subreddits supported"] },
         ],
         faq: [

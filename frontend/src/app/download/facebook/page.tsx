@@ -30,7 +30,12 @@ export default function FacebookDownloaderPage() {
         heading: "Facebook Video Downloader",
         subheading: "Save Facebook videos, Reels, and Stories. Free and no sign-up required.",
         sections: [
-          { title: "How to download Facebook videos", steps: ["Open Facebook and find the video", "Click the three dots and copy the link", "Paste the URL above", "Choose quality and download"] },
+          { title: "How to download Facebook videos", steps: [
+            { text: "Open Facebook and find the video", image: "/og-image.png" },
+            { text: "Click the three dots and copy the link", image: "/og-image.png" },
+            { text: "Paste the URL above", image: "/og-image.png" },
+            { text: "Choose quality and download", image: "/og-image.png" },
+          ]},
           { title: "Supported Content", items: ["Facebook Videos", "Facebook Reels", "Facebook Stories", "Facebook Live recordings"] },
         ],
         faq: [

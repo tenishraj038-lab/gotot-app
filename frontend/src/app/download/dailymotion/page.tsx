@@ -30,7 +30,12 @@ export default function DailymotionDownloaderPage() {
         heading: "Dailymotion Video Downloader",
         subheading: "Save Dailymotion videos in HD quality. Free and no sign-up required.",
         sections: [
-          { title: "How to download Dailymotion videos", steps: ["Open the Dailymotion video", "Copy the video URL", "Paste it in the field above", "Choose quality and download"] },
+          { title: "How to download Dailymotion videos", steps: [
+            { text: "Open the Dailymotion video", image: "/og-image.png" },
+            { text: "Copy the video URL", image: "/og-image.png" },
+            { text: "Paste it in the field above", image: "/og-image.png" },
+            { text: "Choose quality and download", image: "/og-image.png" },
+          ]},
           { title: "Supported Features", items: ["HD and SD quality options", "MP4 format", "Fast download speeds", "No registration needed"] },
         ],
         faq: [

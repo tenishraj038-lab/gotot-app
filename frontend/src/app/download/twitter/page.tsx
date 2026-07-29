@@ -29,7 +29,12 @@ export default function TwitterDownloaderPage() {
         heading: "Twitter/X Video Downloader",
         subheading: "Download any video from Twitter/X. Save in MP4 or MP3 format.",
         sections: [
-          { title: "How to download Twitter videos", steps: ["Find the tweet with the video", "Copy the tweet URL", "Paste it above and select format", "Download your video"] },
+          { title: "How to download Twitter videos", steps: [
+            { text: "Find the tweet with the video", image: "/og-image.png" },
+            { text: "Copy the tweet URL", image: "/og-image.png" },
+            { text: "Paste it above and select format", image: "/og-image.png" },
+            { text: "Download your video", image: "/og-image.png" },
+          ]},
           { title: "Features", items: ["Download videos from Twitter/X", "Save GIFs", "Extract audio from video tweets", "High resolution downloads"] },
         ],
         faq: [
