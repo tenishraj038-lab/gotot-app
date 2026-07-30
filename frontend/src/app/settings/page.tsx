@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Settings, User, Lock, Bell, Save, Loader2 } from "lucide-react";
 import { ListShimmer } from "@/components/LoadingShimmer";
-import { api, loadTokens, setTokens, UserInfo } from "@/lib/api";
+import { api, loadTokens, setTokens } from "@/lib/api";
 import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";

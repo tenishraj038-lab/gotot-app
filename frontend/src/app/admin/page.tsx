@@ -66,7 +66,7 @@ interface DownloadAnalytics {
 
 export default function AdminPage() {
   const router = useRouter();
-  const { user, setAuthModalOpen } = useStore();
+  const { setAuthModalOpen } = useStore();
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [subs, setSubs] = useState<AdminSub[]>([]);
@@ -85,7 +85,7 @@ export default function AdminPage() {
     is_active: boolean; clicks: number; created_at: string;
   }>>([]);
   const [affForm, setAffForm] = useState({ platform: "", name: "", url: "", description: "", commission_rate: "" });
-  const [editingAff, setEditingAff] = useState<string | null>(null);
+  const [editingAff, _setEditingAff] = useState<string | null>(null);
 
   useEffect(() => {
     loadTokens();

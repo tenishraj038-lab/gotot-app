@@ -80,6 +80,9 @@ class Settings(BaseSettings):
     support_email: str = "support@gotot.app"
     dmca_email: str = "dmca@gotot.app"
     privacy_email: str = "privacy@gotot.app"
+    legal_email: str = "legal@gotot.app"
+    security_email: str = "security@gotot.app"
+    business_email: str = "business@gotot.app"
 
     google_client_id: str = ""
     google_client_secret: str = ""

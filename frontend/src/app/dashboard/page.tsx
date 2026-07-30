@@ -4,11 +4,11 @@ import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import {
   User, CreditCard, Key, Gift, Download, LogOut,
-  Copy, Check, Loader2, Plus, X, ExternalLink, Clock,
+  Copy, Check, Loader2, Plus, X, Clock,
   Shield, Zap, TrendingUp,
 } from "lucide-react";
 import { useStore } from "@/lib/store";
-import { api, loadTokens, clearTokens, ApiKeyInfo, PaymentRecord, ReferralInfo, UserInfo } from "@/lib/api";
+import { api, loadTokens, clearTokens, ApiKeyInfo, PaymentRecord, ReferralInfo } from "@/lib/api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 

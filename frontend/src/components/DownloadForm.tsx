@@ -144,8 +144,8 @@ export default function DownloadForm() {
     }
   }, []);
 
-  const doSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const doSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setLocalError(null);
 
     const urlValidationError = validateUrl(url);
@@ -160,7 +160,15 @@ export default function DownloadForm() {
     }
 
     const searchVer = useStore.getState().searchVersion + 1;
-    useStore.setState({ isLoading: true, videoInfo: null, downloadResult: null, error: null, playlistEntries: [], searchVersion: searchVer });
+    useStore.setState({
+      isLoading: true,
+      videoInfo: null,
+      downloadResult: null,
+      error: null,
+      playlistEntries: [],
+      searchVersion: searchVer,
+      lastVideoInfo: null,
+    });
 
     try {
       if (detectedPlatform === "instagram") {

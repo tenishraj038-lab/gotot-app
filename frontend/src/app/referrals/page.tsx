@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Trophy, Medal, Users, Copy, Check, TrendingUp, Clock, Gift, BarChart3, Award, List, Loader2 } from "lucide-react";
+import { Trophy, Users, Copy, Check, TrendingUp, Clock, Gift, BarChart3, List, Loader2 } from "lucide-react";
 import { api, loadTokens } from "@/lib/api";
 import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
@@ -239,7 +239,7 @@ export default function ReferralsPage() {
                   <p className="p-8 text-center text-gray-400">No referrals yet. Be the first!</p>
                 ) : (
                   <div className="divide-y divide-gray-100 dark:divide-gray-800">
-                    {leaderboard?.entries.map((entry, i) => (
+                    {leaderboard?.entries.map((entry) => (
                       <div
                         key={entry.user_id}
                         className={`flex items-center gap-4 p-4 ${

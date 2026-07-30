@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Bell, CheckCheck, Download, AlertTriangle, CreditCard, Users, Shield, Gift, Megaphone, ArrowUp, Loader2 } from "lucide-react";
+import { Bell, CheckCheck, Download, AlertTriangle, CreditCard, Shield, Gift, Megaphone, ArrowUp } from "lucide-react";
 import { api, loadTokens } from "@/lib/api";
 import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
@@ -49,7 +49,6 @@ export default function NotificationsPage() {
   const { setAuthModalOpen } = useStore();
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [unread, setUnread] = useState(0);
-  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "unread">("all");
   const fetchId = useRef(0);
@@ -73,7 +72,6 @@ export default function NotificationsPage() {
       if (id !== fetchId.current) return; // stale response
       setNotifications(data.notifications);
       setUnread(data.unread);
-      setTotal(data.total);
     } catch {
       toast.error("Failed to load notifications");
     }

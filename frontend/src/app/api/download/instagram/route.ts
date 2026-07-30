@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const INSTAGRAM_GRAPHQL_URL = "https://www.instagram.com/api/graphql";
-
 interface InstagramVideoInfo {
   id: string;
   url: string;

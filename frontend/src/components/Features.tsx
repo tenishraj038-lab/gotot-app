@@ -2,7 +2,7 @@
 
 import {
   Zap, Shield, Globe, Download, Layers, Sparkles,
-  Music, Users, Monitor, Clock,
+  Music, Users, Clock,
 } from "lucide-react";
 import { useLocale } from "@/lib/i18n";
 

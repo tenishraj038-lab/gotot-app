@@ -1,25 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Check, Loader2 } from "lucide-react";
+import { Mail, Check, Loader2, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function NewsletterSignup() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  function validateEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!email || !email.includes("@")) return toast.error("Valid email required");
+    setError(null);
+
+    if (!email.trim()) {
+      setError("Email is required");
+      return;
+    }
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
     setLoading(true);
     try {
       const { api } = await import("@/lib/api");
       await api.contactMessage("Newsletter Signup", email, "Newsletter subscription request");
       setSubscribed(true);
-      toast.success("Subscribed to newsletter!");
+      toast.success("Subscribed successfully! Check your inbox for confirmation.");
     } catch {
-      toast.error("Failed to subscribe");
+      setError("Failed to subscribe. Please try again.");
+      toast.error("Subscription failed");
     }
     setLoading(false);
   }
@@ -27,8 +43,11 @@ export default function NewsletterSignup() {
   if (subscribed) {
     return (
       <div className="flex items-center gap-3 p-4 rounded-xl bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400">
-        <Check className="w-5 h-5" />
-        <p className="text-sm font-medium">You're subscribed! Check your inbox.</p>
+        <Check className="w-5 h-5 shrink-0" />
+        <div className="text-left">
+          <p className="text-sm font-medium">You're subscribed!</p>
+          <p className="text-xs text-green-600 dark:text-green-400">Check your inbox for confirmation.</p>
+        </div>
       </div>
     );
   }
@@ -41,7 +60,7 @@ export default function NewsletterSignup() {
           type="email"
           placeholder="Enter your email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => { setEmail(e.target.value); setError(null); }}
           className="w-full pl-10 pr-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
           required
         />
@@ -54,6 +73,11 @@ export default function NewsletterSignup() {
         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
         Subscribe
       </button>
+      {error && (
+        <div className="flex items-center gap-1 text-xs text-red-500 dark:text-red-400 mt-1">
+          <AlertCircle className="w-3 h-3" /> {error}
+        </div>
+      )}
     </form>
   );
 }

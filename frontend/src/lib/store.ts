@@ -64,19 +64,49 @@ interface DownloadState {
   setSupabaseUser: (user: User | null) => void;
   supabaseSession: Session | null;
   setSupabaseSession: (session: Session | null) => void;
+
+  // Download flow persistence
+  lastVideoInfo: VideoInfo | null;
+  setLastVideoInfo: (info: VideoInfo | null) => void;
+  isDownloading: boolean;
+  setIsDownloading: (downloading: boolean) => void;
+  downloadProgress: number | null;
+  setDownloadProgress: (progress: number | null) => void;
+  downloadSpeed: string | null;
+  setDownloadSpeed: (speed: string | null) => void;
+  downloadETA: string | null;
+  setDownloadETA: (eta: string | null) => void;
+  downloadFileSize: string | null;
+  setDownloadFileSize: (size: string | null) => void;
+  isDownloadCancelled: boolean;
+  setIsDownloadCancelled: (cancelled: boolean) => void;
+  downloadRetryCount: number;
+  setDownloadRetryCount: (count: number) => void;
+  selectedFormatId: string | null;
+  setSelectedFormatId: (id: string | null) => void;
+  selectedAudioFormat: string | null;
+  setSelectedAudioFormat: (format: string | null) => void;
+  selectedAudioBitrate: string | null;
+  setSelectedAudioBitrate: (bitrate: string | null) => void;
+  downloadQueue: Array<{ id: string; url: string; title: string; format: string; status: string; progress: number; file_size: number | null }>;
+  setDownloadQueue: (queue: Array<{ id: string; url: string; title: string; format: string; status: string; progress: number; file_size: number | null }>) => void;
+  addToDownloadQueue: (item: { id: string; url: string; title: string; format: string; status: string; progress: number; file_size: number | null }) => void;
+  updateDownloadQueueItem: (id: string, updates: Partial<{ status: string; progress: number; file_size: number | null }>) => void;
+  removeFromDownloadQueue: (id: string) => void;
+  clearDownloadQueue: () => void;
 }
 
-export const useStore = create<DownloadState>((set, get) => ({
+export const useStore = create<DownloadState>((set) => ({
   url: "",
   setUrl: (url) => set({ url }),
   isLoading: false,
   setIsLoading: (loading) => set({ isLoading: loading, error: null, downloadResult: null }),
   videoInfo: null,
-  setVideoInfo: (info) => set({ videoInfo: info, error: null }),
+  setVideoInfo: (info) => set({ videoInfo: info, error: null, lastVideoInfo: info }),
   downloadResult: null,
   setDownloadResult: (result) => set({ downloadResult: result }),
   error: null,
-  setError: (error) => set({ error, isLoading: false, videoInfo: null, downloadResult: null }),
+  setError: (error) => set({ error, isLoading: false }),
   isDarkMode: false,
   toggleDarkMode: () =>
     set((state) => {
@@ -141,4 +171,43 @@ export const useStore = create<DownloadState>((set, get) => ({
   setSupabaseUser: (user) => set({ supabaseUser: user }),
   supabaseSession: null,
   setSupabaseSession: (session) => set({ supabaseSession: session }),
+
+  // Download flow persistence
+  lastVideoInfo: null,
+  setLastVideoInfo: (info) => set({ lastVideoInfo: info }),
+  isDownloading: false,
+  setIsDownloading: (downloading) => set({ isDownloading: downloading }),
+  downloadProgress: null,
+  setDownloadProgress: (progress) => set({ downloadProgress: progress }),
+  downloadSpeed: null,
+  setDownloadSpeed: (speed) => set({ downloadSpeed: speed }),
+  downloadETA: null,
+  setDownloadETA: (eta) => set({ downloadETA: eta }),
+  downloadFileSize: null,
+  setDownloadFileSize: (size) => set({ downloadFileSize: size }),
+  isDownloadCancelled: false,
+  setIsDownloadCancelled: (cancelled) => set({ isDownloadCancelled: cancelled }),
+  downloadRetryCount: 0,
+  setDownloadRetryCount: (count) => set({ downloadRetryCount: count }),
+  selectedFormatId: null,
+  setSelectedFormatId: (id) => set({ selectedFormatId: id }),
+  selectedAudioFormat: null,
+  setSelectedAudioFormat: (format) => set({ selectedAudioFormat: format }),
+  selectedAudioBitrate: null,
+  setSelectedAudioBitrate: (bitrate) => set({ selectedAudioBitrate: bitrate }),
+  downloadQueue: [],
+  setDownloadQueue: (queue) => set({ downloadQueue: queue }),
+  addToDownloadQueue: (item) =>
+    set((state) => ({ downloadQueue: [...state.downloadQueue, item] })),
+  updateDownloadQueueItem: (id, updates) =>
+    set((state) => ({
+      downloadQueue: state.downloadQueue.map((item) =>
+        item.id === id ? { ...item, ...updates } : item
+      ),
+    })),
+  removeFromDownloadQueue: (id) =>
+    set((state) => ({
+      downloadQueue: state.downloadQueue.filter((item) => item.id !== id),
+    })),
+  clearDownloadQueue: () => set({ downloadQueue: [] }),
 }));

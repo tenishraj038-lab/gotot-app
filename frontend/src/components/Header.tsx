@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Moon, Sun, Github, User, LogOut, LayoutDashboard, Menu, X, Bell } from "lucide-react";
+import { Moon, Sun, User, LogOut, LayoutDashboard, Menu, X, Bell } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { loadTokens, clearTokens, getAuthToken, api } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import LocaleSwitcher from "./LocaleSwitcher";
-import { useLocale } from "@/lib/i18n";
 
 function NotificationBell() {
   const [unread, setUnread] = useState(0);
@@ -33,8 +32,7 @@ function NotificationBell() {
 }
 
 export default function Header() {
-  const { t } = useLocale();
-  const { isDarkMode, toggleDarkMode, user, setUser, setSubscription, setAuthModalOpen } = useStore();
+  const { isDarkMode, toggleDarkMode, user, setUser, setSubscription } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const router = useRouter();

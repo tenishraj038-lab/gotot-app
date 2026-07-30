@@ -8,7 +8,7 @@ import { api } from "@/lib/api";
 import toast from "react-hot-toast";
 
 export default function PaymentModal() {
-  const { paymentModalOpen, setPaymentModalOpen, pendingDownload } = useStore();
+  const { paymentModalOpen, setPaymentModalOpen } = useStore();
   const [loading, setLoading] = useState(false);
 
   const handlePayPerDownload = async () => {

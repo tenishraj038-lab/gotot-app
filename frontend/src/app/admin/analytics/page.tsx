@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { BarChart3, Users, Download, DollarSign, Activity, Zap, GitBranch, Key, Loader2 } from "lucide-react";
+import { BarChart3, Users, Download, DollarSign, Activity, Zap, GitBranch } from "lucide-react";
 import { api, loadTokens } from "@/lib/api";
 import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
@@ -20,7 +20,7 @@ interface ExecutiveAnalytics {
 
 export default function AnalyticsPage() {
   const router = useRouter();
-  const { user, setAuthModalOpen } = useStore();
+  const { setAuthModalOpen } = useStore();
   const [data, setData] = useState<ExecutiveAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
 

@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { CreditCard, Receipt, AlertTriangle, XCircle, Download, RefreshCw, ArrowLeft, CheckCircle, Clock, Loader2 } from "lucide-react";
-import { api, loadTokens, PaymentRecord, SubscriptionStatus } from "@/lib/api";
+import { CreditCard, Receipt, AlertTriangle, XCircle, RefreshCw, CheckCircle, Loader2 } from "lucide-react";
+import { api, loadTokens, PaymentRecord } from "@/lib/api";
 import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import Link from "next/link";

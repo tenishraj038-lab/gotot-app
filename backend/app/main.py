@@ -17,7 +17,7 @@ from app.middleware.logging import JSONLogMiddleware, JSONLogFormatter
 from app.middleware.rate_limit import limiter
 from app.middleware.csrf import CSRFMiddleware
 from app.middleware.request_size import RequestSizeLimitMiddleware
-from app.routes import auth, download, payments, api_keys, referrals, affiliates, admin, announcements, contact, ws, google_auth, notifications, feedback
+from app.routes import auth, download, payments, api_keys, referrals, affiliates, admin, announcements, contact, ws, google_auth, notifications, feedback, subscription
 from app.models.database import init_db, async_session, engine
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST, REGISTRY, Counter, Histogram, Gauge, Info
 
@@ -129,6 +129,7 @@ app.include_router(contact.router)
 app.include_router(ws.router)
 app.include_router(notifications.router)
 app.include_router(feedback.router)
+app.include_router(subscription.router)
 
 
 @app.get("/health")

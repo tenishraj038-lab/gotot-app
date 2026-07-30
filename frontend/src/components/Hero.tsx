@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDown, Shield, Zap, Globe, Users, Play, Clock, Download } from "lucide-react";
+import { ArrowDown, Shield, Zap, Globe, Download } from "lucide-react";
 import { useLocale } from "@/lib/i18n";
 
 export default function Hero() {

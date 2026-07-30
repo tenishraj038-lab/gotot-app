@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckSquare, Square, Download, Loader2, Music, Monitor } from "lucide-react";
+import { CheckSquare, Square, Download, Loader2 } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { api } from "@/lib/api";
 import { useState } from "react";

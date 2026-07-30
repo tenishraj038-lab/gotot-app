@@ -6,6 +6,15 @@ import { Mail, Send, Loader2, CheckCircle } from "lucide-react";
 import { api } from "@/lib/api";
 import toast from "react-hot-toast";
 
+const CONTACT_EMAILS = [
+  { label: "Support", email: "support@gotot.app", icon: "🛟" },
+  { label: "DMCA", email: "dmca@gotot.app", icon: "⚖️" },
+  { label: "Legal", email: "legal@gotot.app", icon: "📜" },
+  { label: "Privacy", email: "privacy@gotot.app", icon: "🔒" },
+  { label: "Security", email: "security@gotot.app", icon: "🛡️" },
+  { label: "Business", email: "business@gotot.app", icon: "💼" },
+];
+
 export default function ContactPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -123,6 +132,26 @@ export default function ContactPage() {
             </button>
           </motion.form>
         )}
+
+        {/* Contact Emails */}
+        <div className="mt-16">
+          <h2 className="text-2xl font-bold mb-6 text-center">Reach Out</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {CONTACT_EMAILS.map((item) => (
+              <a
+                key={item.email}
+                href={`mailto:${item.email}`}
+                className="flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200/50 dark:border-gray-700/50 hover:border-primary-300 dark:hover:border-primary-700 transition-colors"
+              >
+                <span className="text-xl">{item.icon}</span>
+                <div>
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{item.label}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{item.email}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

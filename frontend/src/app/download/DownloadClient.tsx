@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
