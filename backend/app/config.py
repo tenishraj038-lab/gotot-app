@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     environment: str = "development"
     log_level: str = "info"
     sentry_dsn: str = ""
-    allowed_origins: str = "http://localhost:3000"
+    allowed_origins: str = "http://localhost:3000,https://gotot-453qpfean-tenishraj038-1534s-projects.vercel.app"
     celery_broker_url: str = "redis://localhost:6379/1"
     celery_result_backend: str = "redis://localhost:6379/0"
     max_file_size_mb: int = 500

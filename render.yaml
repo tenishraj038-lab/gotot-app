@@ -17,9 +17,9 @@ services:
       - key: LOG_LEVEL
         value: info
       - key: ALLOWED_ORIGINS
-        value: "https://gotot-p1ky6aib7-tenishraj038-1534s-projects.vercel.app,https://gotot-app.onrender.com"
+        value: "https://gotot-453qpfean-tenishraj038-1534s-projects.vercel.app,https://gotot-app.onrender.com"
       - key: FRONTEND_URL
-        value: "https://gotot-p1ky6aib7-tenishraj038-1534s-projects.vercel.app"
+        value: "https://gotot-453qpfean-tenishraj038-1534s-projects.vercel.app"
       - key: RATE_LIMIT_PER_MINUTE
         value: "60"
       - key: DOWNLOAD_TIMEOUT
