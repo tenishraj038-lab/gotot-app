@@ -53,7 +53,6 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         # Allow cross-origin downloads for download endpoints
         if request.url.path.startswith("/download/"):
             response.headers["Cross-Origin-Resource-Policy"] = "cross-origin"
-            response.headers["Access-Control-Allow-Origin"] = "*"
         else:
             response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
 
