@@ -31,11 +31,11 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://gotot-app.onrender.com/:path*"
+      "destination": "https://gotot-backend.onrender.com/:path*"
     },
     {
       "source": "/ws/:path*",
-      "destination": "https://gotot-app.onrender.com/ws/:path*"
+      "destination": "https://gotot-backend.onrender.com/ws/:path*"
     }
   ],
   "crons": [
