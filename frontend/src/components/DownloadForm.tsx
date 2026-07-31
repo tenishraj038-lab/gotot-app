@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { Search, Link, Loader2, Music, Video, Twitter, Facebook, Globe, Clapperboard, Tv, Briefcase, Pin, PlayCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, Link, Loader2, Music, Video, Twitter, Facebook, Globe, Clapperboard, Tv, Briefcase, Pin, PlayCircle, X } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { api } from "@/lib/api";
 import TermsModal from "./TermsModal";
-import toast from "react-hot-toast";
 
 const PLATFORM_ICONS: Record<string, { icon: React.ElementType; color: string }> = {
   instagram: { icon: Video, color: "text-purple-500" },
@@ -101,56 +100,6 @@ export default function DownloadForm() {
     api.getFFmpegStatus().then(s => setFfmpegAvailable(s.available)).catch(() => {});
   }, [setFfmpegAvailable]);
 
-  const fetchInstagram = useCallback(async (instagramUrl: string) => {
-    setIsLoading(true);
-    setVideoInfo(null);
-    setPlaylistEntries([]);
-    useStore.setState({ videoInfo: null, downloadResult: null, error: null });
-    try {
-      const res = await fetch("/api/download/instagram", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ instagramUrl }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to fetch");
-      const mapped = {
-        id: data.id || instagramUrl,
-        title: data.title || "Instagram video",
-        thumbnail: data.thumbnail || "",
-        duration: data.duration || 0,
-        uploader: data.author || "instagram",
-        platform: "instagram",
-        url: data.url || "", // CDN video URL or image URL
-        formats: [{
-          format_id: "direct",
-          format_note: `${data.height || 1080}p`,
-          ext: data.is_image ? (data.url?.split(".").pop()?.split("?")[0] || "jpg") : "mp4",
-          height: data.height || 1080,
-          width: data.width || 1920,
-          filesize: 0,
-          vcodec: data.is_image ? "none" : "h264",
-          acodec: data.is_image ? "none" : "aac",
-          video_ext: data.is_image ? (data.url?.split(".").pop()?.split("?")[0] || "jpg") : "mp4",
-          resolution: data.is_image ? "original" : `${data.height || 1080}p`,
-          fps: data.is_image ? 0 : 30,
-          url: data.url || "", // CDN video URL or image URL
-          is_image: data.is_image || false,
-        }],
-        is_playlist: false,
-        is_image: data.is_image || false,
-      };
-      setVideoInfo(mapped as any);
-      useStore.setState({ downloadResult: null, error: null, isLoading: false });
-      addRecentUrl(instagramUrl);
-      toast.success("Video found!");
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Failed to get video info";
-      setError(msg);
-      setIsLoading(false);
-    }
-  }, []);
-
   const doSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setLocalError(null);
@@ -178,50 +127,6 @@ export default function DownloadForm() {
     });
 
     try {
-      if (detectedPlatform === "instagram") {
-        await fetchInstagram(url.trim());
-        return;
-      }
-
-      // Check for direct image URLs
-      const imageExts = /\.(jpg|jpeg|png|webp|gif|bmp|svg|ico)(\?.*)?$/i;
-      if (imageExts.test(url.trim())) {
-        const info = await api.downloadImage(url.trim());
-        useStore.setState({
-          videoInfo: {
-            id: info.file_name,
-            title: info.file_name,
-            thumbnail: url.trim(),
-            duration: 0,
-            uploader: "Image",
-            platform: "image",
-            url: url.trim(),
-            formats: [{
-              format_id: "image",
-              format_note: "Image",
-              ext: info.format || "jpg",
-              height: 0,
-              width: 0,
-              filesize: info.file_size,
-              vcodec: "none",
-              acodec: "none",
-              video_ext: info.format || "jpg",
-              resolution: "original",
-              fps: 0,
-              url: url.trim(),
-              is_image: true,
-            }],
-            is_playlist: false,
-            is_image: true,
-          } as any,
-          isLoading: false,
-          error: null,
-        });
-        addRecentUrl(url.trim());
-        toast.success("Image found!");
-        return;
-      }
-
       // Start info extraction immediately for faster preview
       const info = await api.getVideoInfo(url.trim());
       useStore.setState({ videoInfo: info, isLoading: false, error: null });
@@ -284,6 +189,17 @@ export default function DownloadForm() {
             autoComplete="off"
             autoCorrect="off"
           />
+
+          {url && (
+            <button
+              type="button"
+              onClick={() => { setUrl(""); setVideoInfo(null); setError(null); setDetectedPlatform(null); }}
+              className="absolute right-20 p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+              aria-label="Clear URL"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
 
           <div className="absolute right-2 flex items-center gap-2">
             <button
