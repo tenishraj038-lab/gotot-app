@@ -47,9 +47,15 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-Request-ID"] = request_id
         response.headers["X-DNS-Prefetch-Control"] = "off"
         response.headers["X-Download-Options"] = "noopen"
-        response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
         response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
         response.headers["Cross-Origin-Embedder-Policy"] = "credentialless"
+
+        # Allow cross-origin downloads for download endpoints
+        if request.url.path.startswith("/download/"):
+            response.headers["Cross-Origin-Resource-Policy"] = "cross-origin"
+            response.headers["Access-Control-Allow-Origin"] = "*"
+        else:
+            response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
 
         if settings.environment == "production":
             csp_parts = [

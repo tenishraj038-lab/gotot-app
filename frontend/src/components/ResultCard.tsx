@@ -66,6 +66,7 @@ export default function ResultCard() {
   const [showFormats, setShowFormats] = useState(false);
   const [activeTab, setActiveTab] = useState<"video" | "audio">("video");
   const [cancelToken, setCancelToken] = useState(false);
+  const [downloadElapsed, setDownloadElapsed] = useState<string>("");
   const abortControllerRef = useRef<AbortController | null>(null);
   const startTimeRef = useRef<number>(0);
   const bytesDownloadedRef = useRef<number>(0);
@@ -120,6 +121,8 @@ export default function ResultCard() {
         setDownloadETA(formatETA(remaining, speed));
         const progress = Math.min(99, Math.round((bytesDownloadedRef.current / totalSize) * 100));
         setDownloadProgress(progress);
+        const ms = Math.round((elapsed % 1) * 1000);
+        setDownloadElapsed(`${Math.floor(elapsed)}s ${ms}ms`);
       }
     }, 500);
   }, [cancelToken]);
@@ -184,18 +187,29 @@ export default function ResultCard() {
         const result = await api.startDownload(url, formatId, false, "192");
         if (!result?.download_url) throw new Error(result?.require_payment ? "Upgrade needed" : "Download failed");
 
-        const resp = await fetch(`${API_BASE}${result.download_url}`, { signal: abortControllerRef.current.signal });
-        if (!resp.ok) throw new Error(`Server error ${resp.status}`);
+        // Use direct browser navigation for faster, streaming download
+        const downloadUrl = `${API_BASE}${result.download_url}`;
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.download = result.file_name || "video";
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
 
-        const contentLength = resp.headers.get("content-length");
-        const totalSize = contentLength ? parseInt(contentLength, 10) : 0;
-        if (totalSize > 0) startProgressTracking(totalSize);
+        // Track progress via content-length if available
+        try {
+          const headResp = await fetch(downloadUrl, { method: "HEAD" });
+          const contentLength = headResp.headers.get("content-length");
+          if (contentLength) {
+            const totalSize = parseInt(contentLength, 10);
+            if (totalSize > 0) startProgressTracking(totalSize);
+          }
+        } catch {
+          // HEAD request failed, progress tracking will use estimated size
+        }
 
-        const blob = await resp.blob();
-        const ext = result.format || "mp4";
-        const fn = `${result.file_name || "video"}.${ext}`;
-        downloadBlob(blob, fn);
-        addDownloadToQueue(videoInfo.title || "Video", ext, blob.size);
+        addDownloadToQueue(videoInfo.title || "Video", result.format || "mp4", result.file_size);
 
         setMsg("Download complete! Ready for another.");
         setDone(true);
@@ -241,17 +255,29 @@ export default function ResultCard() {
       const result = await api.startDownload(url, formatId, true, audioBitrate);
       if (!result?.download_url) throw new Error(result?.require_payment ? "Upgrade needed" : "Download failed");
 
-      const resp = await fetch(`${API_BASE}${result.download_url}`, { signal: abortControllerRef.current.signal });
-      if (!resp.ok) throw new Error(`Server error ${resp.status}`);
+      // Use direct browser navigation for faster, streaming download
+      const downloadUrl = `${API_BASE}${result.download_url}`;
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = result.file_name || "audio";
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-      const contentLength = resp.headers.get("content-length");
-      const totalSize = contentLength ? parseInt(contentLength, 10) : 0;
-      if (totalSize > 0) startProgressTracking(totalSize);
+      // Track progress via content-length if available
+      try {
+        const headResp = await fetch(downloadUrl, { method: "HEAD" });
+        const contentLength = headResp.headers.get("content-length");
+        if (contentLength) {
+          const totalSize = parseInt(contentLength, 10);
+          if (totalSize > 0) startProgressTracking(totalSize);
+        }
+      } catch {
+        // HEAD request failed, progress tracking will use estimated size
+      }
 
-      const blob = await resp.blob();
-      const fn = `${(videoInfo.title || "audio").replace(/[^a-z0-9_-]/gi, "_")}.${downloadFormat}`;
-      downloadBlob(blob, fn);
-      addDownloadToQueue(videoInfo.title || "Audio", downloadFormat, blob.size);
+      addDownloadToQueue(videoInfo.title || "Audio", downloadFormat, result.file_size);
 
       setMsg("Audio download complete!");
       setDone(true);

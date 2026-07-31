@@ -105,7 +105,7 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type", "X-Request-ID", "X-Razorpay-Signature",
                    "X-Ad-Completed", "X-API-Key", "X-CSRF-Token", "X-Google-Token"],
-    expose_headers=["X-Request-ID", "X-Response-Time"],
+    expose_headers=["X-Request-ID", "X-Response-Time", "Content-Disposition", "Accept-Ranges", "Content-Length"],
     max_age=600,
 )
 

@@ -53,16 +53,22 @@ class Settings(BaseSettings):
     download_dir: str = "/tmp/downloads"
     temp_dir: str = "/tmp/gotot_temp"
     download_timeout: int = 300
-    info_timeout: int = 30
-    cache_ttl: int = 3600
+    info_timeout: int = 10
+    cache_ttl: int = 7200
     file_retention_hours: int = 1
     cleanup_interval_seconds: int = 3600
     allowed_domains: str = "*"
     download_retries: int = 3
-    download_retry_backoff: float = 2.0
-    merge_timeout: int = 180
-    ffprobe_timeout: int = 15
+    download_retry_backoff: float = 1.5
+    merge_timeout: int = 60
+    ffprobe_timeout: int = 10
     cookies_dir: str = "/tmp/gotot_cookies"
+    max_concurrent_downloads: int = 5
+    download_chunk_size: int = 1048576
+    enable_download_resume: bool = True
+    ffmpeg_preset: str = "ultrafast"
+    redis_cache_ttl: int = 7200
+    metadata_cache_ttl: int = 600
 
     razorpay_key_id: str = ""
     razorpay_key_secret: str = ""

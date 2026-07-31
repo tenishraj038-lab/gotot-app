@@ -36,18 +36,23 @@ from yt_dlp.utils import DownloadError as YtDlpDownloadError
 
 from app.providers import provider_registry
 from app.utils.helpers import sanitize_filename
+from app.config import get_settings
 
 logger = logging.getLogger("gotot.download")
 logger.setLevel(logging.INFO)
 
+settings = get_settings()
+
 _CANCEL_EVENTS: dict[str, asyncio.Event] = {}
 
-MAX_RETRIES = 3
-RETRY_BACKOFF = 2.0
-DOWNLOAD_TIMEOUT = 600
-INFO_TIMEOUT = 15
-FFPROBE_TIMEOUT = 15
-MERGE_TIMEOUT = 180
+MAX_RETRIES = settings.download_retries
+RETRY_BACKOFF = settings.download_retry_backoff
+DOWNLOAD_TIMEOUT = settings.download_timeout
+INFO_TIMEOUT = settings.info_timeout
+FFPROBE_TIMEOUT = settings.ffprobe_timeout
+MERGE_TIMEOUT = settings.merge_timeout
+FRAGMENT_RETRIES = 3
+RETRIES = settings.download_retries
 
 
 @dataclass
@@ -366,6 +371,7 @@ def repair_media_file(input_path: str, output_dir: Optional[str] = None) -> Opti
             "-map", "0",
             "-movflags", "+faststart",
             "-f", "mp4",
+            "-preset", "ultrafast",
             output_path,
         ]
         proc = subprocess.run(cmd, capture_output=True, text=True, timeout=MERGE_TIMEOUT)
@@ -723,15 +729,16 @@ def _build_ydl_opts(format_id: str, output_dir: str, provider: Any, task_id: str
         "progress_hooks": [_progress_hook] if task_id else [],
         "ignoreerrors": False,
         "no_color": True,
-        "socket_timeout": 60,
-        "retries": 5,
-        "fragment_retries": 5,
-        "file_access_retries": 3,
-        "extractor_retries": 3,
+        "socket_timeout": 15,
+        "retries": RETRIES,
+        "fragment_retries": FRAGMENT_RETRIES,
+        "file_access_retries": 2,
+        "extractor_retries": 2,
+        "http_chunk_size": 1024 * 1024,
+        "continuedl": True,
+        "noprogress": True,
+        "merge_output_format": "mp4" if check_ffmpeg() else None,
     }
-
-    if check_ffmpeg():
-        opts["merge_output_format"] = "mp4"
 
     if cookies_file and os.path.isfile(cookies_file):
         opts["cookiefile"] = cookies_file
@@ -876,7 +883,10 @@ async def download_video(
         return None
 
     try:
-        return await loop.run_in_executor(None, _download)
+        return await asyncio.wait_for(loop.run_in_executor(None, _download), timeout=DOWNLOAD_TIMEOUT)
+    except asyncio.TimeoutError:
+        logger.warning("download_timeout", extra={"url": url, "task_id": task_id, "timeout_s": DOWNLOAD_TIMEOUT})
+        return None
     finally:
         if task_id:
             _CANCEL_EVENTS.pop(task_id, None)
@@ -934,8 +944,12 @@ async def download_and_merge_mp4(
                 "quiet": True,
                 "no_warnings": True,
                 "ignoreerrors": True,
-                "socket_timeout": 60,
-                "retries": 3,
+                "socket_timeout": 15,
+                "retries": RETRIES,
+                "fragment_retries": FRAGMENT_RETRIES,
+                "http_chunk_size": 1024 * 1024,
+                "continuedl": True,
+                "noprogress": True,
             }
 
             if cookies_file and os.path.isfile(cookies_file):
@@ -985,7 +999,7 @@ async def download_and_merge_mp4(
                 continue
         return None
 
-    return await loop.run_in_executor(None, _download)
+    return await asyncio.wait_for(loop.run_in_executor(None, _download), timeout=DOWNLOAD_TIMEOUT)
 
 
 def _probe_has_audio(file_path: str) -> bool:
@@ -1019,6 +1033,7 @@ def _force_remux_with_audio(original_path: str, output_dir: str, info: dict) -> 
             ffmpeg_path, "-y", "-i", original_path,
             "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
             "-movflags", "+faststart",
+            "-preset", "ultrafast",
             merged_path,
         ]
         proc = subprocess.run(cmd, capture_output=True, text=True, timeout=MERGE_TIMEOUT)
@@ -1109,8 +1124,12 @@ async def download_mp3(
             "quiet": True,
             "no_warnings": True,
             "ignoreerrors": True,
-            "socket_timeout": 60,
-            "retries": 5,
+            "socket_timeout": 15,
+            "retries": RETRIES,
+            "fragment_retries": FRAGMENT_RETRIES,
+            "http_chunk_size": 1024 * 1024,
+            "continuedl": True,
+            "noprogress": True,
         }
 
         if cookies_file and os.path.isfile(cookies_file):
@@ -1169,7 +1188,7 @@ async def download_mp3(
                 return None
         return None
 
-    return await loop.run_in_executor(None, _download_and_convert)
+    return await asyncio.wait_for(loop.run_in_executor(None, _download_and_convert), timeout=DOWNLOAD_TIMEOUT)
 
 
 # ─── Image download ────────────────────────────────────────────────────
@@ -1227,10 +1246,10 @@ async def download_image(
                 return None
         return None
 
-    return await loop.run_in_executor(None, _download)
+    return await asyncio.wait_for(loop.run_in_executor(None, _download), timeout=DOWNLOAD_TIMEOUT)
 
 
-# ─── Playlist extraction ────────────────────────────────────────────────
+# ─── Playlist extraction ──────────────────────────────────────────
 
 async def extract_playlist(url: str) -> Optional[list]:
     provider = provider_registry.detect(url)
@@ -1252,10 +1271,10 @@ async def extract_playlist(url: str) -> Optional[list]:
                 return None
         return None
 
-    return await loop.run_in_executor(None, _extract)
+    return await asyncio.wait_for(loop.run_in_executor(None, _extract), timeout=INFO_TIMEOUT)
 
 
-# ─── Subtitle extraction ────────────────────────────────────────────────
+# ─── Subtitle extraction ──────────────────────────────
 
 async def extract_subtitles(url: str) -> Optional[list]:
     provider = provider_registry.detect(url)
@@ -1294,10 +1313,10 @@ async def extract_subtitles(url: str) -> Optional[list]:
             logger.error("subtitle_extract_failed", extra={"url": url, "error": str(e)})
             return None
 
-    return await loop.run_in_executor(None, _extract)
+    return await asyncio.wait_for(loop.run_in_executor(None, _extract), timeout=INFO_TIMEOUT)
 
 
-# ─── Cleanup utilities ──────────────────────────────────────────────────
+# ─── Cleanup utilities ──────────────────────────────────
 
 def cleanup_temp_files(base_dir: Optional[str] = None, max_age_hours: int = 24):
     """Remove temp download files older than max_age_hours."""

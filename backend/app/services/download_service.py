@@ -16,7 +16,7 @@ _job_locks: Dict[str, asyncio.Lock] = {}
 
 # Cache for metadata (key: url, value: {info, timestamp})
 _metadata_cache: Dict[str, Dict[str, Any]] = {}
-_CACHE_TTL = 300  # 5 minutes
+_CACHE_TTL = settings.cache_ttl
 
 
 def get_job_lock(job_id: str) -> asyncio.Lock:

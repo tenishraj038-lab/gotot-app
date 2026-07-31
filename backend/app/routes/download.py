@@ -4,6 +4,7 @@ Download API Routes
 Endpoints for video info extraction, download management, format selection,
 playlist extraction, subtitle extraction, and download history.
 """
+import asyncio
 import logging
 import os
 import re
@@ -564,19 +565,17 @@ async def batch_download(
     data: BatchDownloadRequest,
     db: AsyncSession = Depends(get_db),
 ):
-    """Download multiple videos in a single batch."""
+    """Download multiple videos concurrently."""
     user = await get_user_from_request(request, db)
     cookies_file = _resolve_cookies_file(request)
     batch_limit = 20
     urls_to_process = data.urls[:batch_limit]
-    results = []
 
-    for url in urls_to_process:
+    async def _process_url(url: str) -> dict:
         try:
             info = await extract_video_info(url)
             if not info:
-                results.append({"url": url, "status": "error", "detail": "Could not extract info"})
-                continue
+                return {"url": url, "status": "error", "detail": "Could not extract info"}
 
             result = await download_video(
                 url, data.format_id, settings.download_dir,
@@ -595,21 +594,31 @@ async def batch_download(
                     ip_address=request.client.host if request.client else None,
                 )
                 db.add(record)
-                results.append({
+                return {
                     "url": url,
                     "status": "completed",
                     "file_name": result.file_name,
                     "file_size": result.file_size,
                     "format": result.format,
                     "download_url": f"/download/file/{quote(os.path.basename(result.file_path))}",
-                })
+                }
             else:
-                results.append({"url": url, "status": "error", "detail": "Download failed"})
+                return {"url": url, "status": "error", "detail": "Download failed"}
         except HTTPException as e:
-            results.append({"url": url, "status": "error", "detail": e.detail})
+            return {"url": url, "status": "error", "detail": e.detail}
         except Exception as e:
             logger.error("batch_item_error", extra={"url": url, "error": str(e)})
-            results.append({"url": url, "status": "error", "detail": str(e)[:200]})
+            return {"url": url, "status": "error", "detail": str(e)[:200]}
+
+    results = await asyncio.gather(*[_process_url(url) for url in urls_to_process], return_exceptions=True)
+
+    # Handle any exceptions from gather
+    processed_results = []
+    for r in results:
+        if isinstance(r, Exception):
+            processed_results.append({"url": "unknown", "status": "error", "detail": str(r)[:200]})
+        else:
+            processed_results.append(r)
 
     try:
         await db.commit()
@@ -621,9 +630,9 @@ async def batch_download(
             pass
 
     return {
-        "results": results,
-        "total": len(results),
-        "successful": sum(1 for r in results if r["status"] == "completed"),
+        "results": processed_results,
+        "total": len(processed_results),
+        "successful": sum(1 for r in processed_results if r["status"] == "completed"),
     }
 
 
@@ -643,7 +652,7 @@ async def serve_file(
     db: AsyncSession = Depends(get_db),
     id: str | None = Query(None, alias="id"),
 ):
-    """Serve a downloaded file with proper MIME types and security checks."""
+    """Serve a downloaded file with proper MIME types, streaming, and security checks."""
     user = await get_user_from_request(request, db)
     ip_address = request.client.host if request.client else "unknown"
 
@@ -675,11 +684,24 @@ async def serve_file(
                 raise HTTPException(status_code=401, detail="Download link expired")
 
     media_type = _get_media_type(safe_name)
+    file_size = os.path.getsize(resolved_path)
+
+    headers = {
+        "Content-Disposition": f'attachment; filename="{safe_name}"',
+        "Content-Length": str(file_size),
+        "Accept-Ranges": "bytes",
+        "X-Accel-Buffering": "no",
+        "X-Content-Type-Options": "nosniff",
+        "Cache-Control": "no-store, no-cache, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
+    }
 
     return FileResponse(
         path=resolved_path,
         filename=safe_name,
         media_type=media_type,
+        headers=headers,
     )
 
 
