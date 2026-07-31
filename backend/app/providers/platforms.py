@@ -11,7 +11,18 @@ class TikTokProvider(StandardExtractor, BaseProvider):
         r"(?:https?:\/\/)?(?:www\.)?tiktok\.com\/@[\w.-]+\/video\/\d+",
         r"(?:https?:\/\/)?vm\.tiktok\.com\/[\w-]+",
         r"(?:https?:\/\/)?(?:www\.)?tiktok\.com\/t\/[\w-]+",
+        r"(?:https?:\/\/)?(?:www\.)?tiktok\.com\/\w+\/video\/\d+",
     ]
+
+    def get_extract_opts(self) -> dict:
+        return {
+            "headers": {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            },
+            "extractor_args": {
+                "tiktok": {"api_url": "https://www.tiktok.com"},
+            },
+        }
 
 
 class InstagramProvider(StandardExtractor, BaseProvider):
@@ -21,6 +32,8 @@ class InstagramProvider(StandardExtractor, BaseProvider):
     patterns = [
         r"(?:https?:\/\/)?(?:www\.)?instagram\.com\/(?:p|reel|tv|stories)\/[\w-]+",
         r"(?:https?:\/\/)?(?:www\.)?instagram\.com\/stories\/[\w.-]+\/\d+",
+        r"(?:https?:\/\/)?(?:www\.)?instagram\.com\/reels\/[\w-]+",
+        r"(?:https?:\/\/)?(?:www\.)?instagram\.com\/explore\/(?:tags|locations)\/[\w-]+",
     ]
 
     def supports_images(self) -> bool:
@@ -30,7 +43,17 @@ class InstagramProvider(StandardExtractor, BaseProvider):
         return True
 
     def get_auth_hint(self) -> Optional[str]:
-        return "Instagram often requires login credentials. Use cookies to access private content."
+        return "Instagram requires authentication for most content. Use /download/cookies/import to add browser cookies."
+
+    def get_extract_opts(self) -> dict:
+        return {
+            "headers": {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            },
+            "extractor_args": {
+                "instagram": {"api_url": "https://www.instagram.com"},
+            },
+        }
 
 
 class TwitterProvider(StandardExtractor, BaseProvider):
@@ -41,6 +64,7 @@ class TwitterProvider(StandardExtractor, BaseProvider):
         r"(?:https?:\/\/)?(?:www\.)?(?:twitter\.com|x\.com)\/\w+\/status\/\d+",
         r"(?:https?:\/\/)?(?:www\.)?(?:twitter\.com|x\.com)\/\w+\/status\/\d+\?s=\d+",
         r"(?:https?:\/\/)?(?:www\.)?(?:twitter\.com|x\.com)\/\w+\/status\/\d+\/video\/\d+",
+        r"(?:https?:\/\/)?(?:www\.)?(?:twitter\.com|x\.com)\/\w+\/video\/\d+",
     ]
 
     def requires_auth(self) -> bool:
@@ -48,6 +72,13 @@ class TwitterProvider(StandardExtractor, BaseProvider):
 
     def get_auth_hint(self) -> Optional[str]:
         return "X/Twitter may require authentication. Import browser cookies for best results."
+
+    def get_extract_opts(self) -> dict:
+        return {
+            "headers": {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            },
+        }
 
 
 class FacebookProvider(StandardExtractor, BaseProvider):
@@ -68,6 +99,21 @@ class FacebookProvider(StandardExtractor, BaseProvider):
     def get_auth_hint(self) -> Optional[str]:
         return "Facebook often requires authentication. Import browser cookies for best results."
 
+    def get_extract_opts(self) -> dict:
+        return {
+            "headers": {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.9",
+            },
+            "extractor_args": {
+                "facebook": {
+                    "api_url": "https://www.facebook.com",
+                    "no_page_cache": True,
+                },
+            },
+        }
+
 
 class RedditProvider(StandardExtractor, BaseProvider):
     name = "reddit"
@@ -76,8 +122,19 @@ class RedditProvider(StandardExtractor, BaseProvider):
     patterns = [
         r"(?:https?:\/\/)?(?:www\.)?reddit\.com\/r\/[\w-]+\/comments\/[\w-]+\/.+",
         r"(?:https?:\/\/)?(?:www\.)?reddit\.com\/r\/[\w-]+\/comments\/[\w-]+",
-        r"(?:https?:\/\/)?v\.redd\.it\/[\w]+",
+        r"(?:https?:\/\/)?v\.redd\.it\/[\w-]+",
+        r"(?:https?:\/\/)?old\.reddit\.com\/r\/[\w-]+\/comments\/[\w-]+\/.+",
+        r"(?:https?:\/\/)?old\.reddit\.com\/r\/[\w-]+\/comments\/[\w-]+",
+        r"(?:https?:\/\/)?i\.redd\.it\/[\w-]+",
+        r"(?:https?:\/\/)?redd\.it\/[\w-]+",
     ]
+
+    def get_extract_opts(self) -> dict:
+        return {
+            "headers": {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            },
+        }
 
 
 class VimeoProvider(StandardExtractor, BaseProvider):
@@ -88,10 +145,21 @@ class VimeoProvider(StandardExtractor, BaseProvider):
         r"(?:https?:\/\/)?(?:www\.)?vimeo\.com\/\d+",
         r"(?:https?:\/\/)?(?:www\.)?vimeo\.com\/manage\/\d+",
         r"(?:https?:\/\/)?player\.vimeo\.com\/video\/\d+",
+        r"(?:https?:\/\/)?(?:www\.)?vimeo\.com\/channels\/[\w-]+\/\d+",
+        r"(?:https?:\/\/)?(?:www\.)?vimeo\.com\/stock\/\d+",
+        r"(?:https?:\/\/)?(?:www\.)?vimeo\.com\/ondemand\/\d+",
+        r"(?:https?:\/\/)?(?:www\.)?vimeo\.com\/[\w-]+\/\d+",
     ]
 
     def supports_playlist(self) -> bool:
         return False
+
+    def get_extract_opts(self) -> dict:
+        return {
+            "headers": {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            },
+        }
 
 
 class DailymotionProvider(StandardExtractor, BaseProvider):
@@ -99,10 +167,19 @@ class DailymotionProvider(StandardExtractor, BaseProvider):
     display_name = "Dailymotion"
     color = "#0066DC"
     patterns = [
-        r"(?:https?:\/\/)?(?:www\.)?dailymotion\.com\/video\/[\w]+",
-        r"(?:https?:\/\/)?(?:www\.)?dailymotion\.com\/embed\/video\/[\w]+",
-        r"(?:https?:\/\/)?dai\.ly\/[\w]+",
+        r"(?:https?:\/\/)?(?:www\.)?dailymotion\.com\/video\/[\w-]+",
+        r"(?:https?:\/\/)?(?:www\.)?dailymotion\.com\/embed\/video\/[\w-]+",
+        r"(?:https?:\/\/)?dai\.ly\/[\w-]+",
+        r"(?:https?:\/\/)?(?:www\.)?dailymotion\.com\/live\/\w+",
+        r"(?:https?:\/\/)?(?:www\.)?dailymotion\.com\/shorts\/\w+",
     ]
+
+    def get_extract_opts(self) -> dict:
+        return {
+            "headers": {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            },
+        }
 
 
 class TwitchProvider(StandardExtractor, BaseProvider):
@@ -125,6 +202,8 @@ class LinkedInProvider(StandardExtractor, BaseProvider):
         r"(?:https?:\/\/)?(?:www\.)?linkedin\.com\/.*\/video\/\d+",
         r"(?:https?:\/\/)?(?:www\.)?linkedin\.com\/feed\/update\/\d+",
         r"(?:https?:\/\/)?(?:www\.)?linkedin\.com\/posts\/[\w-]+-\d+",
+        r"(?:https?:\/\/)?(?:www\.)?linkedin\.com\/company\/[\w-]+\/video\/\d+",
+        r"(?:https?:\/\/)?(?:www\.)?linkedin\.com\/in\/[\w-]+\/detail\/[\w-]+",
     ]
 
     def requires_auth(self) -> bool:
@@ -132,6 +211,13 @@ class LinkedInProvider(StandardExtractor, BaseProvider):
 
     def get_auth_hint(self) -> Optional[str]:
         return "LinkedIn requires authentication for most content. Use browser cookies."
+
+    def get_extract_opts(self) -> dict:
+        return {
+            "headers": {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            },
+        }
 
 
 class PinterestProvider(StandardExtractor, BaseProvider):
