@@ -43,7 +43,7 @@ function formatETA(remainingBytes: number, speedBytesPerSec: number): string {
 export default function ResultCard() {
   const {
     videoInfo, isLoading, error, setError,
-    url, detectedPlatform, setUrl,
+    url, setUrl,
     lastVideoInfo, setLastVideoInfo,
     downloadProgress, setDownloadProgress,
     downloadSpeed, setDownloadSpeed,
@@ -71,7 +71,6 @@ export default function ResultCard() {
   const bytesDownloadedRef = useRef<number>(0);
   const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const isInstagram = detectedPlatform === "instagram";
   const isImage = videoInfo?.is_image || videoInfo?.formats?.[0]?.is_image;
 
   const audioFormats = [
@@ -174,37 +173,6 @@ export default function ResultCard() {
         setMsg("Download complete! Ready for another.");
         setDone(true);
         toast.success("Image downloaded!");
-      } else if (isInstagram) {
-        const cdnUrl = videoInfo.url || (videoInfo as any).formats?.[0]?.url;
-        if (!cdnUrl) throw new Error("Video URL not available");
-
-        const resp = await fetch(`/api/download/stream?url=${encodeURIComponent(cdnUrl)}`, {
-          signal: abortControllerRef.current.signal,
-        });
-        if (!resp.ok) {
-          const t = await resp.text().catch(() => "");
-          let em;
-          try { em = JSON.parse(t).error; } catch { em = `Error ${resp.status}`; }
-          throw new Error(em);
-        }
-
-        const contentLength = resp.headers.get("content-length");
-        const totalSize = contentLength ? parseInt(contentLength, 10) : 0;
-        if (totalSize > 0) startProgressTracking(totalSize);
-
-        const blob = await resp.blob();
-        const fn = ((videoInfo.title || "video").replace(/[^a-z0-9_-]/gi, "_")) + ".mp4";
-        downloadBlob(blob, fn);
-        addDownloadToQueue(videoInfo.title || "Video", "mp4", blob.size);
-
-        fetch("/api/download/log", {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url, platform: "instagram", title: videoInfo.title, format: "mp4", status: "success", file_size: 0 }),
-        }).catch(() => {});
-
-        setMsg("Download complete! Ready for another.");
-        setDone(true);
-        toast.success("Download complete!");
       } else {
         const fmts = videoInfo.formats;
         const formatId = selectedFormatId || fmts?.[0]?.format_id;
@@ -247,7 +215,7 @@ export default function ResultCard() {
     setIsDownloading(false);
     stopProgressTracking();
   }, [
-    videoInfo, url, isInstagram, isImage, downloading, cancelToken,
+    videoInfo, url, isImage, downloading, cancelToken,
     selectedFormatId, startProgressTracking, stopProgressTracking, addDownloadToQueue,
   ]);
 
