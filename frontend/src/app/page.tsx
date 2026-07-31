@@ -19,6 +19,11 @@ const platforms = [
   { name: "Twitch", href: "/download/twitch" },
   { name: "LinkedIn", href: "/download/linkedin" },
   { name: "Pinterest", href: "/download/pinterest" },
+  { name: "Snapchat", href: "/download/snapchat" },
+  { name: "Bilibili", href: "/download/bilibili" },
+  { name: "SoundCloud", href: "/download/soundcloud" },
+  { name: "Rumble", href: "/download/rumble" },
+  { name: "Odysee", href: "/download/odysee" },
 ];
 
 export default function Home() {

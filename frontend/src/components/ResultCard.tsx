@@ -72,6 +72,7 @@ export default function ResultCard() {
   const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const isInstagram = detectedPlatform === "instagram";
+  const isImage = videoInfo?.is_image || videoInfo?.formats?.[0]?.is_image;
 
   const audioFormats = [
     { label: "MP3", value: "mp3", bitrates: ["128", "192", "256", "320"] },
@@ -151,7 +152,29 @@ export default function ResultCard() {
     setDownloadRetryCount(0);
 
     try {
-      if (isInstagram) {
+      if (isImage) {
+        const imageUrl = videoInfo.url || (videoInfo as any).formats?.[0]?.url;
+        if (!imageUrl) throw new Error("Image URL not available");
+
+        const resp = await fetch(imageUrl, {
+          signal: abortControllerRef.current.signal,
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
+        const contentLength = resp.headers.get("content-length");
+        const totalSize = contentLength ? parseInt(contentLength, 10) : 0;
+        if (totalSize > 0) startProgressTracking(totalSize);
+
+        const blob = await resp.blob();
+        const ext = imageUrl.split(".").pop()?.split("?")[0] || "jpg";
+        const fn = `${(videoInfo.title || "image").replace(/[^a-z0-9_-]/gi, "_")}.${ext}`;
+        downloadBlob(blob, fn);
+        addDownloadToQueue(videoInfo.title || "Image", ext, blob.size);
+
+        setMsg("Download complete! Ready for another.");
+        setDone(true);
+        toast.success("Image downloaded!");
+      } else if (isInstagram) {
         const cdnUrl = videoInfo.url || (videoInfo as any).formats?.[0]?.url;
         if (!cdnUrl) throw new Error("Video URL not available");
 
@@ -224,7 +247,7 @@ export default function ResultCard() {
     setIsDownloading(false);
     stopProgressTracking();
   }, [
-    videoInfo, url, isInstagram, downloading, cancelToken,
+    videoInfo, url, isInstagram, isImage, downloading, cancelToken,
     selectedFormatId, startProgressTracking, stopProgressTracking, addDownloadToQueue,
   ]);
 
@@ -482,7 +505,7 @@ export default function ResultCard() {
                   onClick={directDownload}
                   disabled={downloading || !displayInfo}
                   className="w-full py-3.5 px-6 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 active:scale-[0.98] text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-60 flex items-center justify-center gap-2 shadow-lg shadow-primary-500/25 text-base"
-                  aria-label="Download video"
+                  aria-label={isImage ? "Download image" : "Download video"}
                 >
                   {downloading ? (
                     <>
@@ -492,7 +515,7 @@ export default function ResultCard() {
                     </>
                   ) : (
                     <>
-                      <Download className="w-5 h-5" /> Download Video
+                      <Download className="w-5 h-5" /> {isImage ? "Download Image" : "Download Video"}
                     </>
                   )}
                 </button>

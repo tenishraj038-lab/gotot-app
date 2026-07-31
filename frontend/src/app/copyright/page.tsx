@@ -47,6 +47,7 @@ export default function CopyrightPage() {
           <section aria-labelledby="third-party-heading">
             <h2 id="third-party-heading" className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mt-8">2. Third Party Content Disclaimer</h2>
             <p>GoTot does not host copyrighted videos or media on its own servers.</p>
+            <p>GoTot is owned and operated by tenishraj.</p>
             <p>GoTot acts as a neutral software tool that facilitates downloading publicly accessible content from third-party platforms.</p>
             <p>Users are solely responsible for ensuring that their use complies with applicable copyright laws and the Terms of Service of the source platform.</p>
           </section>

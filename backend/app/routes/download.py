@@ -264,6 +264,7 @@ async def get_video_info(request: Request, data: InfoRequest, db: AsyncSession =
     if not info:
         platform = detect_platform(data.url)
         if not platform:
+            logger.warning("extract_no_platform", extra={"url": data.url})
             raise HTTPException(
                 status_code=400,
                 detail="Unsupported URL. We support 10 platforms including TikTok, Instagram, X, Facebook, Reddit, Vimeo, and more.",
@@ -271,6 +272,7 @@ async def get_video_info(request: Request, data: InfoRequest, db: AsyncSession =
 
         provider = __import__("app.providers", fromlist=["provider_registry"]).provider_registry.get(platform)
         auth_required = provider.requires_auth() if provider else False
+        logger.warning("extract_failed", extra={"url": data.url, "platform": platform, "auth_required": auth_required})
 
         raise HTTPException(
             status_code=422 if auth_required else 400,
@@ -392,6 +394,7 @@ async def start_download(
     if not info:
         provider = __import__("app.providers", fromlist=["provider_registry"]).provider_registry.get(platform)
         auth_required = provider.requires_auth() if provider else False
+        logger.warning("extract_failed_download", extra={"url": data.url, "platform": platform, "auth_required": auth_required})
         raise HTTPException(
             status_code=422 if auth_required else 400,
             detail=_build_download_error(
@@ -1010,4 +1013,31 @@ async def validate_download(data: InfoRequest):
         "requires_auth": provider.requires_auth() if provider else False,
         "auth_hint": provider.get_auth_hint() if provider else None,
         "ffmpeg_available": check_ffmpeg(),
+    }
+
+
+@router.post("/image")
+async def download_image_endpoint(data: InfoRequest):
+    """Download an image from supported platforms (Instagram, Pinterest, etc.)."""
+    from app.services.downloader import download_image
+    from app.utils.helpers import sanitize_filename
+
+    url = data.url.strip()
+    platform = detect_platform(url)
+    if not platform:
+        raise HTTPException(status_code=400, detail="Unsupported platform for image download")
+
+    result = await download_image(url)
+    if not result or not result.file_path or not os.path.exists(result.file_path):
+        raise HTTPException(status_code=400, detail="Failed to download image")
+
+    filename = sanitize_filename(result.file_name or "image")
+    ext = result.format or "jpg"
+    return {
+        "file_name": f"{filename}.{ext}",
+        "download_url": f"/download/file/{filename}.{ext}",
+        "file_path": result.file_path,
+        "file_size": result.file_size,
+        "format": ext,
+        "platform": platform,
     }

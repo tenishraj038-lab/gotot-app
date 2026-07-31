@@ -12,11 +12,11 @@ export const en = {
   hero: {
     title: "Download Any Video",
     subtitle: "From Any Platform",
-    description: "Paste a link and download videos in high quality from TikTok, Instagram, Twitter, Facebook, and 10+ more platforms. Free, fast, and secure.",
+    description: "Paste a link and download videos in high quality from TikTok, Instagram, Twitter, Facebook, and 15+ more platforms. Free, fast, and secure.",
     badge: "Trusted by 1M+ users worldwide",
     noLogin: "No login required",
     unlimited: "Unlimited free downloads",
-    platforms: "11+ platforms",
+    platforms: "15+ platforms",
     mp3And4k: "MP3 + 4K supported",
   },
   download: {
@@ -91,8 +91,8 @@ export const en = {
   features: {
     title: "Why",
     subtitle: "The most powerful, secure, and user-friendly video downloader on the web. Trusted by millions worldwide.",
-    platformsTitle: "11+ Platforms",
-    platformsDesc: "TikTok, Instagram, Twitter/X, Facebook, Reddit, Vimeo, Twitch, LinkedIn, Pinterest, Dailymotion.",
+    platformsTitle: "15+ Platforms",
+    platformsDesc: "TikTok, Instagram, Twitter/X, Facebook, Reddit, Vimeo, Twitch, LinkedIn, Pinterest, Snapchat, Bilibili, SoundCloud, Rumble, Odysee, Dailymotion.",
     fastTitle: "Lightning Fast",
     fastDesc: "Async processing for instant video analysis and downloads. Get your videos in seconds.",
     secureTitle: "Secure & Private",
@@ -111,7 +111,7 @@ export const en = {
     freeDesc: "Unlimited downloads, all formats, all qualities. No sign-up required. Upgrade optional.",
   },
   footer: {
-    description: "Universal video downloader. Download from TikTok, Instagram, Twitter, Facebook, Reddit, Vimeo, Twitch, Dailymotion, LinkedIn, and Pinterest. Fast, secure, and private.",
+    description: "Universal video downloader. Download from TikTok, Instagram, Twitter, Facebook, Reddit, Vimeo, Twitch, Dailymotion, LinkedIn, Pinterest, Snapchat, Bilibili, SoundCloud, Rumble, Odysee. Fast, secure, and private.",
     downloaders: "Downloaders",
     morePlatforms: "More Platforms",
     company: "Company",

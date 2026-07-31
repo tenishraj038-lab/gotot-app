@@ -56,6 +56,11 @@ export default function Footer() {
               <li><Link href="/download/dailymotion" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors">Dailymotion</Link></li>
               <li><Link href="/download/linkedin" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors">LinkedIn</Link></li>
               <li><Link href="/download/pinterest" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors">Pinterest</Link></li>
+              <li><Link href="/download/snapchat" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors">Snapchat</Link></li>
+              <li><Link href="/download/bilibili" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors">Bilibili</Link></li>
+              <li><Link href="/download/soundcloud" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors">SoundCloud</Link></li>
+              <li><Link href="/download/rumble" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors">Rumble</Link></li>
+              <li><Link href="/download/odysee" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors">Odysee</Link></li>
             </ul>
           </div>
 
@@ -107,7 +112,7 @@ export default function Footer() {
         {/* Social Media Links */}
         <div className="pt-6 border-t border-gray-200/50 dark:border-gray-800/50 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-500 dark:text-gray-500">
-            &copy; {new Date().getFullYear()} GoTot. {t.footer.rights}
+            &copy; {new Date().getFullYear()} GoTot. Made by tenishraj. {t.footer.rights}
           </p>
           <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-500">
             <a href="https://twitter.com/gotot" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Twitter</a>

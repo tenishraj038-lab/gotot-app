@@ -10,6 +10,7 @@ interface InstagramVideoInfo {
   height: number;
   author: string;
   type: "reel" | "post" | "tv";
+  is_image?: boolean;
 }
 
 export async function POST(request: NextRequest) {
@@ -71,12 +72,22 @@ export async function POST(request: NextRequest) {
     if (!videoUrl) {
       const imageUrlMatch = html.match(/"display_url":"(https:\/\/[^"]+)"/);
       if (imageUrlMatch) {
+        const imageUrl = imageUrlMatch[1].replace(/\\/g, "");
         return NextResponse.json({
-          error: "This post is an image, not a video. Currently, Gotot only supports video downloads.",
-        }, { status: 400 });
+          id: shortcode,
+          url: imageUrl,
+          thumbnail: imageUrl,
+          title: titleMatch ? titleMatch[1] : `Instagram ${mediaType} by ${authorMatch?.[1] || "user"}`,
+          duration: 0,
+          width: 1080,
+          height: 1080,
+          author: authorMatch?.[1] || "instagram",
+          type: mediaType as "reel" | "post" | "tv",
+          is_image: true,
+        });
       }
       return NextResponse.json(
-        { error: "No video found. The post may be private or Instagram blocked the request." },
+        { error: "No video or image found. The post may be private or Instagram blocked the request." },
         { status: 400 }
       );
     }

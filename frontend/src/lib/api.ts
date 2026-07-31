@@ -140,6 +140,7 @@ export interface FormatInfo {
   has_audio?: boolean;
   type?: "video" | "video_only" | "audio";
   needs_audio?: boolean;
+  is_image?: boolean;
 }
 
 export interface VideoInfo {
@@ -163,6 +164,7 @@ export interface VideoInfo {
   thumbnails?: Array<{ url: string; width: number; height: number }>;
   chapters?: Array<{ title: string; start: number; end: number }>;
   ffmpeg_available?: boolean;
+  is_image?: boolean;
 }
 
 export interface DownloadResult {
@@ -556,6 +558,9 @@ export const api = {
 
   validateUrl: (url: string) =>
     request<{ valid: boolean; platform: string; display_name: string; requires_auth: boolean; auth_hint: string | null; ffmpeg_available: boolean }>("/download/validate", { method: "POST", body: { url } }),
+
+  downloadImage: (url: string) =>
+    request<{ file_name: string; download_url: string; file_path: string; file_size: number; format: string; platform: string }>("/download/image", { method: "POST", body: { url } }),
 
   getSubtitles: (url: string) =>
     request<{ subtitles: Array<{ language: string; ext: string; url: string; name: string }>; count: number }>("/download/subtitles", { method: "POST", body: { url } }),

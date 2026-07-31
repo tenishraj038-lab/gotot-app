@@ -75,6 +75,11 @@ const allPlatforms = [
   { name: "Twitch", key: "twitch", icon: Tv, color: "text-violet-500" },
   { name: "LinkedIn", key: "linkedin", icon: Briefcase, color: "text-blue-700" },
   { name: "Pinterest", key: "pinterest", icon: Pin, color: "text-rose-500" },
+  { name: "Snapchat", key: "snapchat", icon: Globe, color: "text-yellow-400" },
+  { name: "Bilibili", key: "bilibili", icon: Tv, color: "text-pink-400" },
+  { name: "SoundCloud", key: "soundcloud", icon: Music, color: "text-orange-400" },
+  { name: "Rumble", key: "rumble", icon: Globe, color: "text-green-500" },
+  { name: "Odysee", key: "odysee", icon: Globe, color: "text-purple-400" },
 ];
 
 export default function DownloadForm() {
@@ -116,22 +121,24 @@ export default function DownloadForm() {
         duration: data.duration || 0,
         uploader: data.author || "instagram",
         platform: "instagram",
-        url: data.url || "", // CDN video URL
+        url: data.url || "", // CDN video URL or image URL
         formats: [{
           format_id: "direct",
           format_note: `${data.height || 1080}p`,
-          ext: "mp4",
+          ext: data.is_image ? (data.url?.split(".").pop()?.split("?")[0] || "jpg") : "mp4",
           height: data.height || 1080,
           width: data.width || 1920,
           filesize: 0,
-          vcodec: "h264",
-          acodec: "aac",
-          video_ext: "mp4",
-          resolution: `${data.height || 1080}p`,
-          fps: 30,
-          url: data.url || "", // CDN video URL
+          vcodec: data.is_image ? "none" : "h264",
+          acodec: data.is_image ? "none" : "aac",
+          video_ext: data.is_image ? (data.url?.split(".").pop()?.split("?")[0] || "jpg") : "mp4",
+          resolution: data.is_image ? "original" : `${data.height || 1080}p`,
+          fps: data.is_image ? 0 : 30,
+          url: data.url || "", // CDN video URL or image URL
+          is_image: data.is_image || false,
         }],
         is_playlist: false,
+        is_image: data.is_image || false,
       };
       setVideoInfo(mapped as any);
       useStore.setState({ downloadResult: null, error: null, isLoading: false });
@@ -173,6 +180,45 @@ export default function DownloadForm() {
     try {
       if (detectedPlatform === "instagram") {
         await fetchInstagram(url.trim());
+        return;
+      }
+
+      // Check for direct image URLs
+      const imageExts = /\.(jpg|jpeg|png|webp|gif|bmp|svg|ico)(\?.*)?$/i;
+      if (imageExts.test(url.trim())) {
+        const info = await api.downloadImage(url.trim());
+        useStore.setState({
+          videoInfo: {
+            id: info.file_name,
+            title: info.file_name,
+            thumbnail: url.trim(),
+            duration: 0,
+            uploader: "Image",
+            platform: "image",
+            url: url.trim(),
+            formats: [{
+              format_id: "image",
+              format_note: "Image",
+              ext: info.format || "jpg",
+              height: 0,
+              width: 0,
+              filesize: info.file_size,
+              vcodec: "none",
+              acodec: "none",
+              video_ext: info.format || "jpg",
+              resolution: "original",
+              fps: 0,
+              url: url.trim(),
+              is_image: true,
+            }],
+            is_playlist: false,
+            is_image: true,
+          } as any,
+          isLoading: false,
+          error: null,
+        });
+        addRecentUrl(url.trim());
+        toast.success("Image found!");
         return;
       }
 
@@ -232,7 +278,7 @@ export default function DownloadForm() {
             onChange={(e) => { setUrl(e.target.value); setLocalError(null); }}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            placeholder="Paste video URL here (Instagram, TikTok, etc.)..."
+            placeholder="Paste video or image URL here (TikTok, Instagram, Snapchat...)"
             className="w-full pl-12 pr-36 py-5 rounded-2xl bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-600 text-base input-glow focus:outline-none focus:border-transparent transition-all duration-200"
             disabled={isLoading}
             autoComplete="off"

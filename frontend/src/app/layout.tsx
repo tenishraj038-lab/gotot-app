@@ -26,8 +26,8 @@ export const metadata: Metadata = {
     "dailymotion downloader", "linkedin downloader", "pinterest downloader",
     "mp3 converter", "video to mp3", "4k video downloader",
   ],
-  authors: [{ name: "GoTot" }],
-  creator: "GoTot",
+  authors: [{ name: "tenishraj" }],
+  creator: "tenishraj",
   publisher: "GoTot",
   metadataBase: new URL("https://gotot.app"),
   openGraph: {
@@ -113,6 +113,7 @@ export default function RootLayout({
         <link rel="canonical" href="https://gotot.app" />
         <link rel="alternate" hrefLang="en" href="https://gotot.app" />
         <link rel="alternate" hrefLang="x-default" href="https://gotot.app" />
+        <meta name="google-site-verification" content="YOUR_GOOGLE_SITE_VERIFICATION_TOKEN" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -167,17 +168,9 @@ export default function RootLayout({
         )}
         {process.env.NEXT_PUBLIC_ADSENSE_ID && (
           <script
-            dangerouslySetInnerHTML={{
-              __html: [
-                "if (localStorage.getItem('gotot_cookie_consent') === 'true') {",
-                "  var s = document.createElement('script');",
-                "  s.async = true;",
-                `  s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}';`,
-                "  s.crossOrigin = 'anonymous';",
-                "  document.head.appendChild(s);",
-                "}",
-              ].join("\n"),
-            }}
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
+            crossOrigin="anonymous"
           />
         )}
       </head>
