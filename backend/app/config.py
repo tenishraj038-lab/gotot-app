@@ -53,7 +53,7 @@ class Settings(BaseSettings):
     download_dir: str = "/tmp/downloads"
     temp_dir: str = "/tmp/gotot_temp"
     download_timeout: int = 300
-    info_timeout: int = 15
+    info_timeout: int = 30
     cache_ttl: int = 7200
     file_retention_hours: int = 1
     cleanup_interval_seconds: int = 3600

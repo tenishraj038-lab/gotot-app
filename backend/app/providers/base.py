@@ -9,6 +9,26 @@ Override get_download_opts() to customize yt-dlp options per platform.
 import re
 from abc import ABC, abstractmethod
 from typing import Optional, Any
+from urllib.parse import urlparse
+
+
+_PLATFORM_HOSTS = {
+    "tiktok": ("tiktok.com", "vm.tiktok.com"),
+    "instagram": ("instagram.com",),
+    "twitter": ("twitter.com", "x.com"),
+    "facebook": ("facebook.com", "fb.watch"),
+    "reddit": ("reddit.com", "redd.it", "v.redd.it", "i.redd.it"),
+    "vimeo": ("vimeo.com",),
+    "dailymotion": ("dailymotion.com", "dai.ly"),
+    "twitch": ("twitch.tv", "clips.twitch.tv"),
+    "linkedin": ("linkedin.com",),
+    "pinterest": ("pinterest.com", "pin.it"),
+    "snapchat": ("snapchat.com", "story.snapchat.com"),
+    "bilibili": ("bilibili.com", "b23.tv"),
+    "soundcloud": ("soundcloud.com", "soundcloud.app.goo.gl"),
+    "rumble": ("rumble.com",),
+    "odysee": ("odysee.com",),
+}
 
 
 class BaseProvider(ABC):
@@ -21,10 +41,16 @@ class BaseProvider(ABC):
         self._compiled_patterns = [re.compile(p, re.IGNORECASE) for p in self.patterns]
 
     def matches(self, url: str) -> bool:
-        for pattern in self._compiled_patterns:
-            if pattern.match(url):
-                return True
-        return False
+        try:
+            hostname = (urlparse(url).hostname or "").lower().rstrip(".")
+        except ValueError:
+            hostname = ""
+
+        hosts = _PLATFORM_HOSTS.get(self.name, ())
+        if any(hostname == host or hostname.endswith(f".{host}") for host in hosts):
+            return True
+
+        return any(pattern.search(url) for pattern in self._compiled_patterns)
 
     @abstractmethod
     def extract_info(self, url: str, ydl_opts: Optional[dict] = None) -> Optional[dict]:

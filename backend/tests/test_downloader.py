@@ -102,8 +102,8 @@ class TestIsValidUrl:
     def test_null_bytes_blocked(self):
         assert not is_valid_url("https://example.com/\x00test")
 
-    def test_localhost_blocked_in_private(self):
-        assert is_valid_url("http://localhost:3000/path")
+    def test_localhost_blocked(self):
+        assert not is_valid_url("http://localhost:3000/path")
 
     def test_ip_urls(self):
         assert is_valid_url("https://93.184.216.34/path")
@@ -343,7 +343,30 @@ class TestProviderBase:
     def test_provider_get_extract_opts(self):
         provider = provider_registry.get("tiktok")
         assert provider is not None
-        assert provider.get_extract_opts() == {}
+        opts = provider.get_extract_opts()
+        assert isinstance(opts, dict)
+        assert "headers" in opts
+
+    @pytest.mark.parametrize("url, platform", [
+        ("https://www.tiktok.com/@creator/video/123", "tiktok"),
+        ("https://x.com/creator/status/123", "twitter"),
+        ("https://www.facebook.com/reel/123", "facebook"),
+        ("https://redd.it/abc123", "reddit"),
+        ("https://vimeo.com/123456", "vimeo"),
+        ("https://dai.ly/abc123", "dailymotion"),
+        ("https://clips.twitch.tv/example", "twitch"),
+        ("https://www.linkedin.com/posts/example-123", "linkedin"),
+        ("https://pin.it/abc123", "pinterest"),
+        ("https://story.snapchat.com/example", "snapchat"),
+        ("https://b23.tv/abc123", "bilibili"),
+        ("https://soundcloud.com/creator/track", "soundcloud"),
+        ("https://rumble.com/example", "rumble"),
+        ("https://odysee.com/@creator/video", "odysee"),
+    ])
+    def test_supported_platform_aliases(self, url, platform):
+        detected = provider_registry.detect(url)
+        assert detected is not None
+        assert detected.name == platform
 
 
 class TestProviderAuthFlags:
