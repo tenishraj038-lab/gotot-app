@@ -48,7 +48,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-DNS-Prefetch-Control"] = "off"
         response.headers["X-Download-Options"] = "noopen"
         response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
-        response.headers["Cross-Origin-Embedder-Policy"] = "credentialless"
+        response.headers["Cross-Origin-Embedder-Policy"] = "require-corp"
 
         # Allow cross-origin downloads for download endpoints
         if request.url.path.startswith("/download/"):
@@ -63,7 +63,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
                 "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
                 "img-src 'self' data: https: blob:",
                 "font-src 'self' https://fonts.gstatic.com",
-                "connect-src 'self' https://api.razorpay.com https://sentry.io https://www.google-analytics.com",
+                "connect-src 'self' https://api.razorpay.com https://sentry.io https://www.google-analytics.com https://*.google-analytics.com https://ep1.adtrafficquality.google https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net",
                 "frame-src 'self' https://checkout.razorpay.com https://ads.google.com https://doubleclick.net https://ad.doubleclick.net https://tpc.googlesyndication.com https://googleads.g.doubleclick.net",
                 "media-src 'self' blob:",
                 "object-src 'none'",

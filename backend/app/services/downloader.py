@@ -65,6 +65,7 @@ class VideoInfo:
     url: str
     is_playlist: bool = False
     playlist_count: int = 0
+    is_image: bool = False
     metadata: Optional[dict] = None
     description: str = ""
     uploader: str = ""
@@ -617,6 +618,16 @@ async def extract_video_info(url: str, ydl_opts: Optional[dict] = None) -> Optio
                     for c in (raw_info.get("chapters") or []):
                         chapters.append({"title": c.get("title"), "start": c.get("start_time"), "end": c.get("end_time")})
 
+                    # Detect image content (e.g., Pinterest image pins)
+                    ext = (raw_info.get("ext") or "").lower()
+                    image_exts = {"jpg", "jpeg", "png", "webp", "gif", "bmp", "svg"}
+                    is_image = ext in image_exts or (
+                        not formats and ext in {"jpg", "jpeg", "png", "webp", "gif", "bmp", "svg"}
+                    )
+                    if not is_image and formats:
+                        # If all formats are image-only (no video codec), treat as image
+                        is_image = all(f.get("vcodec") == "none" for f in formats)
+
                     return VideoInfo(
                         title=raw_info.get("title", "video"),
                         platform=platform,
@@ -624,6 +635,7 @@ async def extract_video_info(url: str, ydl_opts: Optional[dict] = None) -> Optio
                         thumbnail=raw_info.get("thumbnail", ""),
                         formats=formats,
                         url=url,
+                        is_image=is_image,
                         metadata=_build_full_metadata(raw_info, platform),
                         description=(raw_info.get("description") or "")[:500],
                         uploader=raw_info.get("uploader", ""),
@@ -720,6 +732,7 @@ def _build_ydl_opts(format_id: str, output_dir: str, provider: Any, task_id: str
                     mp3_bitrate: str = "192") -> dict:
     """Build yt-dlp options dict with all configurable parameters."""
     base_opts = provider.get_download_opts(format_id, output_dir)
+    extract_opts = provider.get_extract_opts()
     opts = {
         "format": base_opts.get("format", format_id),
         "outtmpl": base_opts.get("outtmpl", f"{output_dir}/%(title)s.%(ext)s"),
@@ -739,6 +752,9 @@ def _build_ydl_opts(format_id: str, output_dir: str, provider: Any, task_id: str
         "noprogress": True,
         "merge_output_format": "mp4" if check_ffmpeg() else None,
     }
+
+    if extract_opts:
+        opts.update(extract_opts)
 
     if cookies_file and os.path.isfile(cookies_file):
         opts["cookiefile"] = cookies_file
@@ -891,6 +907,11 @@ async def download_video(
         if task_id:
             _CANCEL_EVENTS.pop(task_id, None)
             _active_downloads.pop(task_id, None)
+            # Clean up old cancel events to prevent memory leak
+            if len(_CANCEL_EVENTS) > 1000:
+                expired = [k for k in _CANCEL_EVENTS if k not in _active_downloads]
+                for k in expired[:100]:
+                    _CANCEL_EVENTS.pop(k, None)
 
 
 async def download_and_merge_mp4(
@@ -1195,6 +1216,7 @@ async def download_mp3(
 
 async def download_image(
     url: str, output_dir: Optional[str] = None,
+    cookies_file: Optional[str] = None,
 ) -> Optional[DownloadResult]:
     """Download an image from supported platforms (Instagram, Pinterest, X, etc.)."""
     provider = provider_registry.detect(url)
@@ -1208,6 +1230,7 @@ async def download_image(
     loop = asyncio.get_running_loop()
 
     def _download():
+        extract_opts = provider.get_extract_opts()
         ydl_opts = {
             "format": "best",
             "outtmpl": f"{output_dir}/%(title)s.%(ext)s",
@@ -1218,25 +1241,42 @@ async def download_image(
             "socket_timeout": 60,
             "retries": 3,
         }
+        if extract_opts:
+            ydl_opts.update(extract_opts)
+
+        if cookies_file and os.path.isfile(cookies_file):
+            ydl_opts["cookiefile"] = cookies_file
 
         for attempt in range(MAX_RETRIES):
             try:
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     info = ydl.extract_info(url, download=True)
-                    if info.get("height") is None and info.get("ext") in ("jpg", "jpeg", "png", "webp", "gif"):
-                        actual_path = _find_output_file(
-                            output_dir, info, ydl,
-                            expected_exts=["jpg", "jpeg", "png", "webp", "gif"],
+                    if not info:
+                        return None
+
+                    image_exts = ("jpg", "jpeg", "png", "webp", "gif", "bmp", "svg")
+                    expected_exts = list(image_exts)
+                    reported_ext = (info.get("ext") or "").lower()
+                    requested_formats = info.get("requested_downloads") or []
+                    has_image_format = reported_ext in image_exts or any(
+                        (item.get("ext") or "").lower() in image_exts for item in requested_formats
+                    )
+                    actual_path = _find_output_file(output_dir, info, ydl, expected_exts=expected_exts)
+                    if has_image_format and actual_path and os.path.exists(actual_path):
+                        file_size = os.path.getsize(actual_path)
+                        actual_ext = os.path.splitext(actual_path)[1].lstrip(".").lower() or reported_ext or "jpg"
+                        return DownloadResult(
+                            file_path=actual_path,
+                            file_name=sanitize_filename(os.path.splitext(os.path.basename(actual_path))[0]),
+                            file_size=file_size,
+                            format=actual_ext,
                         )
-                        if actual_path and os.path.exists(actual_path):
-                            file_size = os.path.getsize(actual_path)
-                            actual_ext = os.path.splitext(actual_path)[1].lstrip(".") or "jpg"
-                            return DownloadResult(
-                                file_path=actual_path,
-                                file_name=sanitize_filename(os.path.splitext(os.path.basename(actual_path))[0]),
-                                file_size=file_size,
-                                format=actual_ext,
-                            )
+                    logger.warning("image_download_no_output", extra={
+                        "url": url,
+                        "reported_ext": reported_ext,
+                        "reported_height": info.get("height"),
+                        "output_dir": output_dir,
+                    })
                     return None
             except Exception as e:
                 if attempt < MAX_RETRIES - 1:

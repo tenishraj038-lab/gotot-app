@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     environment: str = "development"
     log_level: str = "info"
     sentry_dsn: str = ""
-    allowed_origins: str = "http://localhost:3000,https://gotot-453qpfean-tenishraj038-1534s-projects.vercel.app"
+    allowed_origins: str = "http://localhost:3000,https://gotot.vercel.app,https://gotot-453qpfean-tenishraj038-1534s-projects.vercel.app,https://gotot-app.onrender.com"
     celery_broker_url: str = "redis://localhost:6379/1"
     celery_result_backend: str = "redis://localhost:6379/0"
     max_file_size_mb: int = 500
@@ -53,7 +53,7 @@ class Settings(BaseSettings):
     download_dir: str = "/tmp/downloads"
     temp_dir: str = "/tmp/gotot_temp"
     download_timeout: int = 300
-    info_timeout: int = 10
+    info_timeout: int = 15
     cache_ttl: int = 7200
     file_retention_hours: int = 1
     cleanup_interval_seconds: int = 3600

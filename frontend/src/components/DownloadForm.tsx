@@ -115,16 +115,16 @@ export default function DownloadForm() {
       return;
     }
 
-    const searchVer = useStore.getState().searchVersion + 1;
+    const { bumpSearch } = useStore.getState();
     useStore.setState({
       isLoading: true,
       videoInfo: null,
       downloadResult: null,
       error: null,
       playlistEntries: [],
-      searchVersion: searchVer,
       lastVideoInfo: null,
     });
+    bumpSearch();
 
     try {
       // Start info extraction immediately for faster preview

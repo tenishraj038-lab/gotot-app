@@ -1,4 +1,4 @@
-export const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+export const API_BASE = process.env.NEXT_PUBLIC_API_URL || "/api";
 
 interface RequestOptions {
   method?: string;
@@ -99,6 +99,9 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
         if (Array.isArray(detail)) {
           throw new Error(detail.map((e) => e.msg || String(e)).join("; "));
         }
+        if (typeof detail === "object" && detail !== null) {
+          throw new Error(detail.error || detail.message || JSON.stringify(detail));
+        }
         throw new Error(detail || `HTTP ${retryResponse.status}`);
       }
       return retryResponse.json();
@@ -115,6 +118,9 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     const detail = body.detail;
     if (Array.isArray(detail)) {
       throw new Error(detail.map((e) => e.msg || String(e)).join("; "));
+    }
+    if (typeof detail === "object" && detail !== null) {
+      throw new Error(detail.error || detail.message || JSON.stringify(detail));
     }
     throw new Error(detail || `HTTP ${response.status}`);
   }
@@ -545,7 +551,11 @@ export const api = {
     });
     if (!res.ok) {
       const data = await res.json().catch(() => ({ detail: `HTTP ${res.status}` }));
-      throw new Error(data.detail || `HTTP ${res.status}`);
+      const detail = data.detail;
+      if (typeof detail === "object" && detail !== null) {
+        throw new Error(detail.error || detail.message || JSON.stringify(detail));
+      }
+      throw new Error(detail || `HTTP ${res.status}`);
     }
     return res.json();
   },
